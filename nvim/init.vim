@@ -137,3 +137,4 @@ let g:coc_global_extensions = [
   \ 'coc-prettier',
   \ 'coc-vimlsp',
   \ ]
+nmap <silent> gf <Plug>(coc-definition)
