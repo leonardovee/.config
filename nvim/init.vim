@@ -1,5 +1,4 @@
 call plug#begin('~/.vim/plugged')
-
 " Collection of common configurations for the Nvim LSP client
 Plug 'neovim/nvim-lspconfig'
 
@@ -30,10 +29,12 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
-" Color scheme used in the GIFs!
-" Plug 'arcticicestudio/nord-vim'
-
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'prettier/vim-prettier'
+Plug 'mattn/emmet-vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
+
 " Set completeopt to have a better completion experience
 " :help completeopt
 " menuone: popup even when there's only one match
@@ -127,3 +128,12 @@ autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 set number
 set mouse=a
 set clipboard+=unnamedplus
+let g:coc_global_extensions = [
+  \ 'coc-actions',
+  \ 'coc-lists',
+  \ 'coc-tsserver',
+  \ 'coc-html',
+  \ 'coc-css',
+  \ 'coc-prettier',
+  \ 'coc-vimlsp',
+  \ ]
