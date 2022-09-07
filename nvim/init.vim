@@ -1,52 +1,26 @@
 call plug#begin('~/.vim/plugged')
-
-" Collection of common configurations for the Nvim LSP client
+Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'neovim/nvim-lspconfig'
-
-" Completion framework
 Plug 'hrsh7th/nvim-cmp'
-
-" LSP completion source for nvim-cmp
 Plug 'hrsh7th/cmp-nvim-lsp'
-
-" Snippet completion source for nvim-cmp
 Plug 'hrsh7th/cmp-vsnip'
-
-" Other usefull completion sources
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer'
-
-" See hrsh7th's other plugins for more completion sources!
-
-" To enable more of the features of rust-analyzer, such as inlay hints and more!
 Plug 'simrat39/rust-tools.nvim'
-
-" Snippet engine
 Plug 'hrsh7th/vim-vsnip'
-
-" Fuzzy finder
-" Optional
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-
-" Color scheme used in the GIFs!
-" Plug 'arcticicestudio/nord-vim'
-
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'kyazdani42/nvim-web-devicons'
 call plug#end()
-" Set completeopt to have a better completion experience
-" :help completeopt
-" menuone: popup even when there's only one match
-" noinsert: Do not insert text until a selection is made
-" noselect: Do not select, force user to select one from the menu
+
 set completeopt=menuone,noinsert,noselect
-
-" Avoid showing extra messages when using completion
 set shortmess+=c
+set updatetime=300
+set number
+set mouse=a
+set clipboard+=unnamedplus
 
-" Configure LSP through rust-tools.nvim plugin.
-" rust-tools will configure and enable certain LSP features for us.
-" See https://github.com/simrat39/rust-tools.nvim#configuration
+nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
+
 lua <<EOF
 local nvim_lsp = require'lspconfig'
 
@@ -60,18 +34,9 @@ local opts = {
             other_hints_prefix = "",
         },
     },
-
-    -- all the opts to send to nvim-lspconfig
-    -- these override the defaults set by rust-tools.nvim
-    -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
     server = {
-        -- on_attach is a callback called when the language server attachs to the buffer
-        -- on_attach = on_attach,
         settings = {
-            -- to enable rust-analyzer settings visit:
-            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
             ["rust-analyzer"] = {
-                -- enable clippy on save
                 checkOnSave = {
                     command = "clippy"
                 },
@@ -81,11 +46,7 @@ local opts = {
 }
 
 require('rust-tools').setup(opts)
-EOF
 
-" Setup Completion
-" See https://github.com/hrsh7th/nvim-cmp#basic-configuration
-lua <<EOF
 local cmp = require'cmp'
 cmp.setup({
   -- Enable LSP snippets
@@ -118,12 +79,23 @@ cmp.setup({
     { name = 'buffer' },
   },
 })
+
+	require("nvim-tree").setup({
+  sort_by = "case_sensitive",
+  view = {
+    adaptive_size = true,
+    mappings = {
+      list = {
+        { key = "u", action = "dir_up" },
+      },
+    },
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+})
 EOF
-" Set updatetime for CursorHold
-" 300ms of no cursor movement to trigger CursorHold
-set updatetime=300
-" Show diagnostic popup on cursor hold
-autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
-set number
-set mouse=a
-set clipboard+=unnamedplus
+
