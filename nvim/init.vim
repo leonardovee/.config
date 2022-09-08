@@ -10,6 +10,8 @@ Plug 'simrat39/rust-tools.nvim'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 call plug#end()
 
 set completeopt=menuone,noinsert,noselect
