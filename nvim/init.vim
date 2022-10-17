@@ -1,76 +1,133 @@
 call plug#begin('~/.vim/plugged')
-Plug 'nvim-treesitter/nvim-treesitter'
-Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'neovim/nvim-lspconfig'
 Plug 'simrat39/rust-tools.nvim'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'kyazdani42/nvim-tree.lua'
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
-Plug 'ellisonleao/gruvbox.nvim'
+Plug 'weilbith/nvim-code-action-menu'
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'feline-nvim/feline.nvim'
 call plug#end()
 
-set completeopt=menuone,noinsert,noselect
-set shortmess+=c
-set updatetime=300
-set number
-set mouse=a
-set clipboard+=unnamedplus
-
-nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
+set relativenumber
+set so=999
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set termguicolors
 
 lua <<EOF
-require("gruvbox").setup({
-  undercurl = true,
-  underline = true,
-  bold = true,
-  italic = true,
-  strikethrough = true,
-  invert_selection = false,
-  invert_signs = false,
-  invert_tabline = false,
-  invert_intend_guides = false,
-  inverse = true, -- invert background for search, diffs, statuslines and errors
-  contrast = "", -- can be "hard", "soft" or empty string
-  palette_overrides = {},
-  overrides = {},
-  dim_inactive = false,
-  transparent_mode = false,
-})
-
-local nvim_lsp = require'lspconfig'
-
 local opts = {
-    tools = { -- rust-tools options
-        autoSetHints = true,
-        hover_with_actions = true,
-        inlay_hints = {
-            show_parameter_hints = false,
-            parameter_hints_prefix = "",
-            other_hints_prefix = "",
-        },
+  tools = {
+    autoSetHints = true,
+    hover_with_actions = true,
+    inlay_hints = {
+      show_parameter_hints = true,
+      parameter_hints_prefix = "",
+      other_hints_prefix = "",
+      },
     },
-    server = {
-        settings = {
-            ["rust-analyzer"] = {
-                checkOnSave = {
-                    command = "clippy"
-                },
-            }
-        }
+
+  server = {
+    settings = {
+      ["rust-analyzer"] = {
+        assist = {
+          importEnforceGranularity = true,
+          importPrefix = "crate"
+          },
+        cargo = {
+          allFeatures = true
+          },
+        checkOnSave = {
+          -- default: `cargo check`
+          command = "clippy"
+          },
+        },
+        inlayHints = {
+          lifetimeElisionHints = {
+            enable = true,
+            useParameterNames = true
+          },
+        },
+      }
     },
 }
-
 require('rust-tools').setup(opts)
+EOF
 
-local cmp = require'cmp'
+lua <<EOF
+require('lspconfig').gopls.setup{
+  cmd = {'gopls'},
+  settings = {
+    gopls = {
+      analyses = {
+        nilness = true,
+        unusedparams = true,
+        unusedwrite = true,
+        useany = true,
+      },
+      experimentalPostfixCompletions = true,
+      gofumpt = true,
+      staticcheck = true,
+      usePlaceholders = true,
+    },
+  },
+	on_attach = on_attach,
+}
+EOF
+
+fun! GoFumpt()
+  :silent !gofumpt -w %
+  :edit
+endfun
+autocmd FileType go map <buffer> <leader>p :call append(".", "fmt.Printf(\"%+v\\n\", )")<CR> <bar> :norm $a<CR><esc>j==$i
+autocmd FileType go map <buffer> <leader>e :call append(".", "if err != nil {return err}")<CR> <bar> :w<CR>
+autocmd BufWritePost *.go call GoFumpt()
+
+lua <<EOF
+  function OrgImports(wait_ms)
+    local params = vim.lsp.util.make_range_params()
+    params.context = {only = {"source.organizeImports"}}
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
+    for _, res in pairs(result or {}) do
+      for _, r in pairs(res.result or {}) do
+        if r.edit then
+          vim.lsp.util.apply_workspace_edit(r.edit, "UTF-8")
+        else
+          vim.lsp.buf.execute_command(r.command)
+        end
+      end
+    end
+  end
+EOF
+autocmd BufWritePre *.go lua OrgImports(1000)
+
+nnoremap <silent> <c-]>     <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <c-k>     <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> K         <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gi        <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> gc        <cmd>lua vim.lsp.buf.incoming_calls()<CR>
+nnoremap <silent> gd        <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> gr        <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> gn        <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> gs        <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gw        <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+
+nnoremap <silent> ga        <cmd>CodeActionMenu<CR>
+
+nnoremap <silent> [x        <cmd>lua vim.diagnostic.goto_prev()<CR>
+nnoremap <silent> ]x        <cmd>lua vim.diagnostic.goto_next()<CR>
+nnoremap <silent> ]s        <cmd>lua vim.diagnostic.show()<CR>
+
+nnoremap <silent> <space>q  <cmd>Trouble<CR>
+
+lua <<EOF
+local cmp = require('cmp')
 cmp.setup({
-  -- Enable LSP snippets
   snippet = {
     expand = function(args)
         vim.fn["vsnip#anonymous"](args.body)
@@ -79,64 +136,28 @@ cmp.setup({
   mapping = {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-n>'] = cmp.mapping.select_next_item(),
-    -- Add tab support
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
     ['<Tab>'] = cmp.mapping.select_next_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
     ['<C-e>'] = cmp.mapping.close(),
     ['<CR>'] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     })
   },
-
-  -- Installed sources
   sources = {
     { name = 'nvim_lsp' },
     { name = 'vsnip' },
     { name = 'path' },
     { name = 'buffer' },
+    { name = 'nvim_lsp_signature_help' },
   },
 })
-
-require("nvim-tree").setup({
-  sort_by = "case_sensitive",
-  view = {
-    adaptive_size = true,
-    mappings = {
-      list = {
-        { key = "u", action = "dir_up" },
-      },
-    },
-  },
-  renderer = {
-    group_empty = true,
-  },
-  filters = {
-    dotfiles = true,
-  },
-})
-
-lspconfig = require "lspconfig"
-util = require "lspconfig/util"
-
-lspconfig.gopls.setup {
-cmd = {"gopls", "serve"},
-filetypes = {"go", "gomod"},
-root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-settings = {
-gopls = {
-analyses = {
-  unusedparams = true,
-},
-staticcheck = true,
-},
-},
-}
 EOF
 
-set background=dark " or light if you want light mode
-colorscheme gruvbox
+lua <<EOF
+require('feline').setup()
+EOF
 
