@@ -12,6 +12,7 @@ Plug 'williamboman/nvim-lsp-installer'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'feline-nvim/feline.nvim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'morhetz/gruvbox'
 call plug#end()
 
 set relativenumber
@@ -162,5 +163,11 @@ lua <<EOF
 require('feline').setup()
 EOF
 
-let g:go_fmt_command = "goimports"
-let g:go_fmt_autosave = 1 
+let g:go_imports_mode = 'gopls'
+let g:go_imports_autosave = 1
+let g:go_fmt_autosave = 1
+let g:go_fmt_options = {
+  \ 'gofmt': '-s',
+  \ }
+
+colorscheme gruvbox
