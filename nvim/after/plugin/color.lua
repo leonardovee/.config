@@ -1,3 +1,1 @@
-vim.opt.background = "dark"
-
--- vim.cmd("colorscheme tokyonight")
+-- vim.opt.background = "dark"
