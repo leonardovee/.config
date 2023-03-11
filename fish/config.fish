@@ -5,6 +5,7 @@ fish_add_path /opt/homebrew/bin
 fish_add_path /Users/leonardovee/.cargo/bin 
 fish_add_path /Users/leonardovee/.local/bin
 fish_add_path /usr/local/bin 
+fish_add_path /Users/leonardovee/go/bin/
 function nvm
       bass source ~/.nvm/nvm.sh ';' nvm $argv
 end
