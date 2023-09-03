@@ -2,8 +2,8 @@ return {
     {
         "neovim/nvim-lspconfig",
         config = function()
-            lspconfig = require "lspconfig"
-            util = require "lspconfig/util"
+            lspconfig = require("lspconfig")
+            util = require("lspconfig/util")
             lspconfig.gopls.setup {
                 cmd = {"gopls", "serve"},
                 filetypes = {"go", "gomod"},

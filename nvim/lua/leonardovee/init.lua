@@ -1,7 +1,6 @@
 require("leonardovee.set")
 require("leonardovee.remap")
 
--- setup lazy-nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -15,5 +14,4 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- run lazy-nvim
 require("lazy").setup("plugins")
