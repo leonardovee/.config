@@ -8,3 +8,6 @@ font:
 
 shell:
   program: /opt/homebrew/bin/fish 
+
+window:
+  decorations: None 
