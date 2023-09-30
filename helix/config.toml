@@ -1,0 +1,4 @@
+theme = "base16_default_dark"
+
+[editor]
+line-number = "relative"
