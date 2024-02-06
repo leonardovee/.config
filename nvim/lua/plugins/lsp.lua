@@ -4,6 +4,29 @@ return {
         config = function()
             lspconfig = require("lspconfig")
             util = require("lspconfig/util")
+
+            lspconfig.rust_analyzer.setup {
+                on_attach=on_attach,
+                settings = {
+                    ["rust-analyzer"] = {
+                        imports = {
+                            granularity = {
+                                group = "module",
+                            },
+                            prefix = "self",
+                        },
+                        cargo = {
+                            buildScripts = {
+                                enable = true,
+                            },
+                        },
+                        procMacro = {
+                            enable = true
+                        },
+                    }
+                }
+            }
+
             lspconfig.gopls.setup {
                 cmd = {"gopls", "serve"},
                 filetypes = {"go", "gomod"},
@@ -17,6 +40,7 @@ return {
                     },
                 },
             }
+            lspconfig.clangd.setup {}
 
             vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
             vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
