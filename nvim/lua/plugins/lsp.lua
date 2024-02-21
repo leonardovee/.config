@@ -5,6 +5,8 @@ return {
             lspconfig = require("lspconfig")
             util = require("lspconfig/util")
 
+            lspconfig.tsserver.setup{}
+
             lspconfig.rust_analyzer.setup {
                 on_attach=on_attach,
                 settings = {
