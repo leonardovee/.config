@@ -1,3 +1,1 @@
-return {
-    {"fatih/vim-go"}
-}
+return { "fatih/vim-go" }

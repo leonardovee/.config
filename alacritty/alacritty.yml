@@ -4,10 +4,8 @@ import:
 font:
   size: 24.0
   normal:
-    family: NotoSansMono Nerd Font 
+    family: JetBrains Mono NL
 
 shell:
   program: /opt/homebrew/bin/fish 
 
-window:
-  decorations: None 
