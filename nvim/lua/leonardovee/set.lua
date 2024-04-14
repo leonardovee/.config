@@ -12,8 +12,9 @@ vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.completeopt = {'menuone', 'noselect', 'noinsert'}
 vim.opt.shortmess = vim.opt.shortmess + { c = true}
+vim.opt.clipboard="unnamedplus"
 
-vim.api.nvim_set_option('updatetime', 300)
+vim.api.nvim_set_option('updatetime', 500)
 
 vim.g.mapleader = " "
 -- vim.g.loaded_netrw = 1
