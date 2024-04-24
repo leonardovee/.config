@@ -17,3 +17,11 @@ mimeapps.list
 monitors.xml
 user-dirs.dirs
 user-dirs.locale
+enchant/
+gedit/
+gnome-control-center/
+go/
+goa-1.0/
+htop/
+lutris/
+systemd/
