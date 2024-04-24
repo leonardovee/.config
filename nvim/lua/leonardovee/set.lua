@@ -14,6 +14,9 @@ vim.opt.completeopt = {'menuone', 'noselect', 'noinsert'}
 vim.opt.shortmess = vim.opt.shortmess + { c = true}
 vim.opt.clipboard="unnamedplus"
 
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
 vim.api.nvim_set_option('updatetime', 500)
 
 vim.g.mapleader = " "

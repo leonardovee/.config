@@ -39,6 +39,7 @@ return {
             },
         }
         lspconfig.clangd.setup {}
+        lspconfig.ocamllsp.setup {}
         lspconfig.pyright.setup({
             on_attach = function(client, bufnr)
                 custom_attach(client, bufnr, { allowed_clients = { "efm" } })
