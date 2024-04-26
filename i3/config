@@ -210,12 +210,12 @@ bar {
         focused_workspace    $lightgray $lightgray $bg
         inactive_workspace   $darkgray $darkgray $lightgray
         active_workspace     $darkgray $darkgray $lightgray
-        urgent_workspace     $red $red $bg
+        urgent_workspace     $bg $bg $bg
     }
 }
 
 # class                 border|backgr|text|indicator|child_border
-client.focused          $darkgray $darkgray $lightgray $purple $darkgray
-client.focused_inactive $darkgray $darkgray $lightgray $purple $darkgray
-client.unfocused        $lightgray $lightgray $darkgray $purple $darkgray
-client.urgent           $red $red $white $red $red
+client.focused          $darkgray $darkgray $lightgray $darkgray $darkgray
+client.focused_inactive $darkgray $darkgray $lightgray $darkgray $darkgray
+client.unfocused        $lightgray $lightgray $darkgray $darkgray $darkgray
+client.urgent           $darkgray $darkgray $white $darkgray $darkgray
