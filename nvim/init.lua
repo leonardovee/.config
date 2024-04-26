@@ -11,9 +11,9 @@ vim.opt.incsearch = true
 vim.opt.so = 999
 vim.opt.smartindent = true
 vim.opt.wrap = false
-vim.opt.completeopt = {'menuone', 'noselect', 'noinsert'}
-vim.opt.shortmess = vim.opt.shortmess + { c = true}
-vim.opt.clipboard="unnamedplus"
+vim.opt.completeopt = { 'menuone', 'noselect', 'noinsert' }
+vim.opt.shortmess = vim.opt.shortmess + { c = true }
+vim.opt.clipboard = "unnamedplus"
 
 vim.api.nvim_set_option('updatetime', 500)
 
@@ -25,7 +25,7 @@ vim.g.mapleader = " "
 local M = {}
 
 local function bind(op, outer_opts)
-    outer_opts = outer_opts or {noremap = true}
+    outer_opts = outer_opts or { noremap = true }
     return function(lhs, rhs, opts)
         opts = vim.tbl_extend("force",
             outer_opts,
@@ -35,7 +35,7 @@ local function bind(op, outer_opts)
     end
 end
 
-M.nmap = bind("n", {noremap = false})
+M.nmap = bind("n", { noremap = false })
 M.nnoremap = bind("n")
 M.vnoremap = bind("v")
 M.xnoremap = bind("x")
@@ -63,14 +63,14 @@ nnoremap("<leader>dp", "<cmd>:DapToggleBreakpoint<CR>")
 -- init.lua
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+    })
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -79,11 +79,14 @@ require("lazy").setup({
     {
         "neovim/nvim-lspconfig",
         config = function()
-            lspconfig = require("lspconfig")
-            util = require("lspconfig/util")
-            lspconfig.tsserver.setup{}
+            local lspconfig = require("lspconfig")
+            local util = require("lspconfig/util")
+            lspconfig.tsserver.setup {}
+            lspconfig.clangd.setup {}
+            lspconfig.ocamllsp.setup {}
+            lspconfig.lua_ls.setup {}
             lspconfig.rust_analyzer.setup {
-                on_attach=on_attach,
+                on_attach = on_attach,
                 settings = {
                     ["rust-analyzer"] = {
                         imports = {
@@ -104,8 +107,8 @@ require("lazy").setup({
                 }
             }
             lspconfig.gopls.setup {
-                cmd = {"gopls", "serve"},
-                filetypes = {"go", "gomod"},
+                cmd = { "gopls", "serve" },
+                filetypes = { "go", "gomod" },
                 root_dir = util.root_pattern("go.work", "go.mod", ".git"),
                 settings = {
                     gopls = {
@@ -116,8 +119,6 @@ require("lazy").setup({
                     },
                 },
             }
-            lspconfig.clangd.setup {}
-            lspconfig.ocamllsp.setup {}
             lspconfig.pyright.setup({
                 on_attach = function(client, bufnr)
                     custom_attach(client, bufnr, { allowed_clients = { "efm" } })
@@ -139,29 +140,29 @@ require("lazy").setup({
             vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
             vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
             vim.api.nvim_create_autocmd('LspAttach', {
-            group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-            callback = function(ev)
-                vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-                local opts = { buffer = ev.buf }
-                vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-                vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-                vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-                vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-                vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-                vim.keymap.set('n', '<space>wl', function()
-                    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                end, opts)
-                vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-                vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-                vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-                vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-                vim.keymap.set('n', '<space>f', function()
-                    vim.lsp.buf.format { async = true }
-                end, opts)
-            end,
-        })
+                group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+                callback = function(ev)
+                    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+                    local opts = { buffer = ev.buf }
+                    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+                    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+                    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+                    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+                    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+                    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+                    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+                    vim.keymap.set('n', '<space>wl', function()
+                        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                    end, opts)
+                    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+                    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+                    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+                    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+                    vim.keymap.set('n', '<space>f', function()
+                        vim.lsp.buf.format { async = true }
+                    end, opts)
+                end,
+            })
         end,
     },
     {
@@ -178,14 +179,14 @@ require("lazy").setup({
                 },
             })
         end,
-    }, 
+    },
     {
         "ray-x/lsp_signature.nvim",
         event = "VeryLazy",
         opts = {},
-        config = function(_, opts)
+        config = function(_, _)
             local signature = require("lsp_signature")
-            signature.setup{
+            signature.setup {
                 doc_lines = 0,
                 hint_enable = false,
                 handler_opts = {
@@ -201,7 +202,7 @@ require("lazy").setup({
     },
     {
         "ThePrimeagen/harpoon",
-        branch = "harpoon2", 
+        branch = "harpoon2",
         dependencies = {
             "nvim-lua/plenary.nvim",
         },
@@ -249,8 +250,8 @@ require("lazy").setup({
                 options = {
                     icons_enabled = false,
                     theme = 'auto',
-                    component_separators = { left = '|', right = '|'},
-                    section_separators = { left = '|', right = '|'},
+                    component_separators = { left = '|', right = '|' },
+                    section_separators = { left = '|', right = '|' },
                     disabled_filetypes = {
                         statusline = {},
                         winbar = {},
@@ -265,18 +266,18 @@ require("lazy").setup({
                     }
                 },
                 sections = {
-                    lualine_a = {'mode'},
-                    lualine_b = {'branch', 'diff', 'diagnostics'},
-                    lualine_c = {'filename'},
-                    lualine_x = {'encoding', 'fileformat', 'filetype'},
-                    lualine_y = {'progress'},
-                    lualine_z = {'location'}
+                    lualine_a = { 'mode' },
+                    lualine_b = { 'branch', 'diff', 'diagnostics' },
+                    lualine_c = { 'filename' },
+                    lualine_x = { 'encoding', 'fileformat', 'filetype' },
+                    lualine_y = { 'progress' },
+                    lualine_z = { 'location' }
                 },
                 inactive_sections = {
                     lualine_a = {},
                     lualine_b = {},
-                    lualine_c = {'filename'},
-                    lualine_x = {'location'},
+                    lualine_c = { 'filename' },
+                    lualine_x = { 'location' },
                     lualine_y = {},
                     lualine_z = {}
                 },
@@ -304,16 +305,16 @@ require("lazy").setup({
                 local dap, dapui = require("dap"), require("dapui")
                 dapui.setup()
 
-                dap.listeners.after.event_initialized["dapui_config"]=function()
-                  dapui.open()
+                dap.listeners.after.event_initialized["dapui_config"] = function()
+                    dapui.open()
                 end
 
-                dap.listeners.before.event_terminated["dapui_config"]=function()
-                  dapui.close()
+                dap.listeners.before.event_terminated["dapui_config"] = function()
+                    dapui.close()
                 end
 
-                dap.listeners.before.event_exited["dapui_config"]=function()
-                  dapui.close()
+                dap.listeners.before.event_exited["dapui_config"] = function()
+                    dapui.close()
                 end
             end,
         }
