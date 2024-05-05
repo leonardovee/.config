@@ -23,6 +23,9 @@ font pango:JetBrains Mono NL 16
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
+# Start with a background
+exec --no-startup-id feh --bg-center /home/leonardovee/Pictures/__by_kuvshinov_ilya_dbadr91-pre.jpg
+
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 

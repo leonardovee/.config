@@ -1,7 +1,7 @@
 -- set.lua
 vim.opt.guicursor = ""
 vim.opt.nu = true
-vim.opt.relativenumber = true
+--vim.opt.relativenumber = true
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -18,8 +18,8 @@ vim.opt.clipboard = "unnamedplus"
 vim.api.nvim_set_option('updatetime', 500)
 
 vim.g.mapleader = " "
--- vim.g.loaded_netrw = 1
--- vim.g.loaded_netrwPlugin = 1
+--vim.g.loaded_netrw = 1
+--vim.g.loaded_netrwPlugin = 1
 
 -- keymap.lua
 local M = {}
@@ -50,7 +50,9 @@ nnoremap("<leader>fg", "<cmd>:Telescope live_grep<CR>")
 nnoremap("<leader>fb", "<cmd>:Telescope buffers<CR>")
 nnoremap("<leader>fh", "<cmd>:Telescope help_tags<CR>")
 
-nnoremap("<leader>fe", "<cmd>:Explore<CR>")
+--nnoremap("<leader>fe", "<cmd>:Explore<CR>")
+nnoremap("<leader>fe", "<cmd>:NvimTreeToggle<CR>")
+nnoremap("<leader>fw", "<cmd>:NvimTreeFocus<CR>")
 
 nnoremap("<leader>db", "<cmd>:DapContinue<CR>")
 nnoremap("<leader>dq", "<cmd>:DapTerminate<CR>")
@@ -85,6 +87,9 @@ require("lazy").setup({
             lspconfig.clangd.setup {}
             lspconfig.ocamllsp.setup {}
             lspconfig.lua_ls.setup {}
+            lspconfig.elixirls.setup {
+                cmd = { "/usr/local/elixir-ls/scripts/language_server.sh" },
+            }
             lspconfig.rust_analyzer.setup {
                 on_attach = on_attach,
                 settings = {
@@ -177,31 +182,31 @@ require("lazy").setup({
             local cmp = require("cmp")
             cmp.setup({
                 snippet = {
-                  expand = function(args)
-                    vim.fn["vsnip#anonymous"](args.body)
-                  end,
+                    expand = function(args)
+                        vim.fn["vsnip#anonymous"](args.body)
+                    end,
                 },
                 window = {
-                  --completion = cmp.config.window.bordered(),
-                  documentation = cmp.config.window.bordered(),
+                    --completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
                 },
                 mapping = cmp.mapping.preset.insert({
-                  ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                  ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                  ['<C-Space>'] = cmp.mapping.complete(),
-                  ['<C-e>'] = cmp.mapping.abort(),
-                  ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+                    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                    ['<C-Space>'] = cmp.mapping.complete(),
+                    ['<C-e>'] = cmp.mapping.abort(),
+                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
                 }),
                 sources = cmp.config.sources({
                     { name = 'path' },
-                    { name = 'nvim_lsp', keyword_length = 3 },
-                    { name = 'nvim_lsp_signature_help'},
-                    { name = 'nvim_lua', keyword_length = 2},
-                    { name = 'buffer', keyword_length = 2 },
-                    { name = 'vsnip', keyword_length = 2 },
-                    { name = 'calc'},
+                    { name = 'nvim_lsp',               keyword_length = 3 },
+                    { name = 'nvim_lsp_signature_help' },
+                    { name = 'nvim_lua',               keyword_length = 2 },
+                    { name = 'buffer',                 keyword_length = 2 },
+                    { name = 'vsnip',                  keyword_length = 2 },
+                    { name = 'calc' },
                 })
-              })
+            })
         end,
     },
     {
@@ -218,6 +223,37 @@ require("lazy").setup({
                 },
             })
         end,
+    },
+    {
+        "williamboman/mason.nvim",
+        opts = {},
+        config = function(_, _)
+            local mason = require("mason")
+            mason.setup()
+        end,
+    },
+    {
+        "stevearc/conform.nvim",
+        opts = {},
+        event = "VeryLazy",
+        config = function(_, _)
+            local conform = require("conform")
+            conform.setup {
+                formatters_by_ft = {
+                    lua = { "stylua" },
+                    python = { "isort", "black" },
+                    javascript = { { "prettierd", "prettier" } },
+                    html = { "djlint" },
+                    css = { "djlint" },
+                    go = { "goimports", "gofmt" },
+                    json = { "prettier" },
+                },
+                format_on_save = {
+                    timeout_ms = 500,
+                    lsp_fallback = true,
+                },
+            }
+        end
     },
     {
         "ray-x/lsp_signature.nvim",
@@ -281,9 +317,6 @@ require("lazy").setup({
     },
     {
         "nvim-lualine/lualine.nvim",
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-        },
         config = function()
             require('lualine').setup {
                 options = {
@@ -360,13 +393,39 @@ require("lazy").setup({
     },
     { "airblade/vim-gitgutter" },
     { "github/copilot.vim" },
-    { "fatih/vim-go" },
     {
         "briones-gabriel/darcula-solid.nvim",
         dependencies = { "rktjmp/lush.nvim" }
+    },
+    { "ellisonleao/gruvbox.nvim" },
+    {
+        "nvim-tree/nvim-tree.lua",
+        config = function()
+            local nvim_tree = require("nvim-tree")
+            nvim_tree.setup({
+                view = {
+                    width = 30,
+                    side = "right",
+                },
+                renderer = {
+                    group_empty = false,
+                    icons = {
+                        show = {
+                            file = false,
+                            folder = false,
+                            folder_arrow = false,
+                            git = false,
+                            modified = false,
+                            bookmarks = false,
+                        },
+                    },
+                },
+            })
+        end,
     }
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme 'darcula-solid'
+vim.opt.background = 'light'
+vim.cmd.colorscheme 'gruvbox'
