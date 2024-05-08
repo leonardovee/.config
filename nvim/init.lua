@@ -50,9 +50,7 @@ nnoremap("<leader>fg", "<cmd>:Telescope live_grep<CR>")
 nnoremap("<leader>fb", "<cmd>:Telescope buffers<CR>")
 nnoremap("<leader>fh", "<cmd>:Telescope help_tags<CR>")
 
---nnoremap("<leader>fe", "<cmd>:Explore<CR>")
-nnoremap("<leader>fe", "<cmd>:NvimTreeToggle<CR>")
-nnoremap("<leader>fw", "<cmd>:NvimTreeFocus<CR>")
+nnoremap("<leader>fe", "<cmd>:Explore<CR>")
 
 nnoremap("<leader>db", "<cmd>:DapContinue<CR>")
 nnoremap("<leader>dq", "<cmd>:DapTerminate<CR>")
@@ -199,11 +197,11 @@ require("lazy").setup({
                 }),
                 sources = cmp.config.sources({
                     { name = 'path' },
-                    { name = 'nvim_lsp',               keyword_length = 3 },
+                    { name = 'nvim_lsp', keyword_length = 3 },
                     { name = 'nvim_lsp_signature_help' },
-                    { name = 'nvim_lua',               keyword_length = 2 },
-                    { name = 'buffer',                 keyword_length = 2 },
-                    { name = 'vsnip',                  keyword_length = 2 },
+                    { name = 'nvim_lua', keyword_length = 2 },
+                    { name = 'buffer', keyword_length = 2 },
+                    { name = 'vsnip', keyword_length = 2 },
                     { name = 'calc' },
                 })
             })
@@ -398,31 +396,6 @@ require("lazy").setup({
         dependencies = { "rktjmp/lush.nvim" }
     },
     { "ellisonleao/gruvbox.nvim" },
-    {
-        "nvim-tree/nvim-tree.lua",
-        config = function()
-            local nvim_tree = require("nvim-tree")
-            nvim_tree.setup({
-                view = {
-                    width = 30,
-                    side = "right",
-                },
-                renderer = {
-                    group_empty = false,
-                    icons = {
-                        show = {
-                            file = false,
-                            folder = false,
-                            folder_arrow = false,
-                            git = false,
-                            modified = false,
-                            bookmarks = false,
-                        },
-                    },
-                },
-            })
-        end,
-    }
 })
 
 -- color.lua
