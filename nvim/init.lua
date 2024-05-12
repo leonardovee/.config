@@ -197,11 +197,11 @@ require("lazy").setup({
                 }),
                 sources = cmp.config.sources({
                     { name = 'path' },
-                    { name = 'nvim_lsp', keyword_length = 3 },
+                    { name = 'nvim_lsp',               keyword_length = 3 },
                     { name = 'nvim_lsp_signature_help' },
-                    { name = 'nvim_lua', keyword_length = 2 },
-                    { name = 'buffer', keyword_length = 2 },
-                    { name = 'vsnip', keyword_length = 2 },
+                    { name = 'nvim_lua',               keyword_length = 2 },
+                    { name = 'buffer',                 keyword_length = 2 },
+                    { name = 'vsnip',                  keyword_length = 2 },
                     { name = 'calc' },
                 })
             })
@@ -400,5 +400,4 @@ require("lazy").setup({
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.opt.background = 'light'
-vim.cmd.colorscheme 'gruvbox'
+vim.cmd.colorscheme 'darcula-solid'

@@ -1,5 +1,5 @@
 import:
-  - ~/.config/alacritty/gruvbox-light.yaml
+  - ~/.config/alacritty/base16-default-dark.yml
 
 font:
   size: 24.0

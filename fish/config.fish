@@ -3,7 +3,7 @@ function nvm
 end
 
 function cat
-  bat --style=plain --theme=gruvbox-light $argv
+  bat --style=plain $argv
 end
 
 fish_add_path /opt/homebrew/bin

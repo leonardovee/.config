@@ -1,4 +1,4 @@
-import = ["/home/leonardovee/.config/alacritty/gruvbox-light.toml"]
+import = ["/home/leonardovee/.config/alacritty/base16-default-dark.toml"]
 
 [font]
 size = 18.0
