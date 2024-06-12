@@ -1,11 +1,10 @@
-import = ["/home/leonardovee/.config/alacritty/base16-default-dark.toml"]
+import = ["/Users/leonardovee/.config/alacritty/base16-default-dark.toml"]
 
 [font]
 size = 18.0
 
 [font.normal]
-#family = "JetBrains Mono NL"
-family = "NotoSansMono Nerd Font"
+family = "FiraCode Nerd Font"
 
 [shell]
-program = "fish"
+program = "/opt/homebrew/bin/fish"

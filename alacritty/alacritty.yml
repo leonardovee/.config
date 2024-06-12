@@ -1,0 +1,10 @@
+import:
+  - ~/.config/alacritty/base16-default-dark.yml
+
+font:
+  size: 18.0
+  normal:
+    family: FiraCode Nerd Font 
+
+shell:
+  program: /opt/homebrew/bin/fish
