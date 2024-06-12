@@ -4,7 +4,8 @@ import = ["/home/leonardovee/.config/alacritty/base16-default-dark.toml"]
 size = 18.0
 
 [font.normal]
-family = "JetBrains Mono NL"
+#family = "JetBrains Mono NL"
+family = "NotoSansMono Nerd Font"
 
 [shell]
 program = "fish"
