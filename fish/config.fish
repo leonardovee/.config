@@ -3,6 +3,7 @@ function nvm
 end
 
 fish_add_path /opt/homebrew/bin
+fish_add_path /usr/local/bin
 fish_add_path /usr/local/go/bin
 fish_add_path /Users/$USER/go/bin
 fish_add_path /Users/$USER/.cargo/bin
