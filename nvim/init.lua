@@ -82,9 +82,6 @@ require("lazy").setup({
             lspconfig.clangd.setup({})
             lspconfig.ocamllsp.setup({})
             lspconfig.lua_ls.setup({})
-            lspconfig.elixirls.setup({
-                cmd = { "/usr/local/elixir-ls/scripts/language_server.sh" },
-            })
             lspconfig.rust_analyzer.setup({
                 on_attach = on_attach,
                 settings = {
@@ -209,7 +206,7 @@ require("lazy").setup({
         config = function()
             local ts = require("nvim-treesitter.configs")
             ts.setup({
-                ensure_installed = { "javascript", "typescript", "rust", "go", "lua" },
+                ensure_installed = { "javascript", "typescript", "rust", "go", "lua", "yaml", "json", "toml" },
                 sync_install = false,
                 auto_install = true,
                 highlight = {
@@ -243,6 +240,8 @@ require("lazy").setup({
                     typescriptreact = { 'prettier' },
                     javascript = { 'prettier' },
                     javascriptreact = { 'prettier' },
+                    ocaml = { 'ocamlformat' },
+
                 },
                 format_on_save = {
                     timeout_ms = 500,
@@ -288,6 +287,13 @@ require("lazy").setup({
             conform.formatters.beautysh = {
                 prepend_args = function()
                     return { '--indent-size', '2', '--force-function-style', 'fnpar' }
+                end
+            }
+
+
+            conform.formatters['ocaml-format'] = {
+                prepend_args = function()
+                    return { '-i', '--enable-outside-detected-project' }
                 end
             }
         end,

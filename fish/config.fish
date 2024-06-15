@@ -10,3 +10,6 @@ fish_add_path /Users/$USER/.cargo/bin
 fish_add_path /Users/$USER/Library/Python/3.9/bin
 
 alias k="sudo kubectl"
+
+# opam configuration
+source /Users/leonardovee/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
