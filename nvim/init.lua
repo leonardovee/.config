@@ -77,32 +77,12 @@ require("lazy").setup({
         "neovim/nvim-lspconfig",
         config = function()
             local lspconfig = require("lspconfig")
-            local util = require("lspconfig/util")
+            local util = require("lspconfig.util")
             lspconfig.tsserver.setup({})
             lspconfig.clangd.setup({})
             lspconfig.ocamllsp.setup({})
             lspconfig.lua_ls.setup({})
-            lspconfig.rust_analyzer.setup({
-                on_attach = on_attach,
-                settings = {
-                    ["rust-analyzer"] = {
-                        imports = {
-                            granularity = {
-                                group = "module",
-                            },
-                            prefix = "self",
-                        },
-                        cargo = {
-                            buildScripts = {
-                                enable = true,
-                            },
-                        },
-                        procMacro = {
-                            enable = true,
-                        },
-                    },
-                },
-            })
+            lspconfig.rust_analyzer.setup({})
             lspconfig.gopls.setup({
                 cmd = { "gopls", "serve" },
                 filetypes = { "go", "gomod" },
@@ -143,14 +123,9 @@ require("lazy").setup({
                     local opts = { buffer = ev.buf }
                     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
                     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-                    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
                     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+                    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
                     vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-                    vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
-                    vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
-                    vim.keymap.set("n", "<space>wl", function()
-                        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                    end, opts)
                     vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
                     vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
                     vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
@@ -173,15 +148,6 @@ require("lazy").setup({
         config = function()
             local cmp = require("cmp")
             cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        vim.fn["vsnip#anonymous"](args.body)
-                    end,
-                },
-                window = {
-                    --completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
-                },
                 mapping = cmp.mapping.preset.insert({
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -195,7 +161,6 @@ require("lazy").setup({
                     { name = "nvim_lsp_signature_help" },
                     { name = "nvim_lua",               keyword_length = 2 },
                     { name = "buffer",                 keyword_length = 2 },
-                    { name = "vsnip",                  keyword_length = 2 },
                     { name = "calc" },
                 }),
             })
@@ -206,7 +171,7 @@ require("lazy").setup({
         config = function()
             local ts = require("nvim-treesitter.configs")
             ts.setup({
-                ensure_installed = { "javascript", "typescript", "rust", "go", "lua", "yaml", "json", "toml" },
+                ensure_installed = { "javascript", "typescript", "rust", "go", "lua", "yaml", "json", "toml", "ocaml" },
                 sync_install = false,
                 auto_install = true,
                 highlight = {
@@ -378,45 +343,36 @@ require("lazy").setup({
     },
     {
         "mfussenegger/nvim-dap",
-        {
+        dependencies = {
             "leoluz/nvim-dap-go",
-            config = function()
-                require("dap-go").setup()
-            end,
-        },
-        {
             "rcarriga/nvim-dap-ui",
-            dependencies = {
-                "nvim-neotest/nvim-nio",
-            },
-            config = function()
-                local dap, dapui = require("dap"), require("dapui")
-                dapui.setup()
-
-                dap.listeners.after.event_initialized["dapui_config"] = function()
-                    dapui.open()
-                end
-
-                dap.listeners.before.event_terminated["dapui_config"] = function()
-                    dapui.close()
-                end
-
-                dap.listeners.before.event_exited["dapui_config"] = function()
-                    dapui.close()
-                end
-            end,
+            "nvim-neotest/nvim-nio",
         },
+        config = function()
+            require("dap-go").setup()
+
+            local dap, dapui = require("dap"), require("dapui")
+            dapui.setup()
+
+            dap.listeners.after.event_initialized["dapui_config"] = function()
+                dapui.open()
+            end
+
+            dap.listeners.before.event_terminated["dapui_config"] = function()
+                dapui.close()
+            end
+
+            dap.listeners.before.event_exited["dapui_config"] = function()
+                dapui.close()
+            end
+        end,
     },
     { "airblade/vim-gitgutter" },
     {
         "rose-pine/neovim",
         config = function(_, _)
             local rose = require("rose-pine")
-            rose.setup({
-                styles = {
-                    transparency = true,
-                },
-            })
+            rose.setup({})
         end,
     },
 })
