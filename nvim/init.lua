@@ -371,6 +371,16 @@ require("lazy").setup({
     },
     { "airblade/vim-gitgutter" },
     {
+        "ThePrimeagen/refactoring.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+            require("refactoring").setup()
+        end,
+    },
+    {
         "rose-pine/neovim",
         config = function(_, _)
             local rose = require("rose-pine")
