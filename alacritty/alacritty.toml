@@ -1,7 +1,7 @@
 import = ["/Users/leonardovee/.config/alacritty/base16-default-dark.toml"]
 
 [font]
-size = 26.0
+size = 18.0
 
 [font.normal]
 family = "FiraCode Nerd Font"

@@ -8,6 +8,7 @@ fish_add_path /usr/local/go/bin
 fish_add_path /Users/$USER/go/bin
 fish_add_path /Users/$USER/.cargo/bin
 fish_add_path /Users/$USER/Library/Python/3.9/bin
+fish_add_path /Users/$USER/Library/Python/3.10/bin
 
 # alias k="sudo kubectl"
 

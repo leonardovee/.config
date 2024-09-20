@@ -78,7 +78,7 @@ require("lazy").setup({
         config = function()
             local lspconfig = require("lspconfig")
             local util = require("lspconfig.util")
-            lspconfig.tsserver.setup({})
+            lspconfig.ts_ls.setup({})
             lspconfig.clangd.setup({})
             lspconfig.ocamllsp.setup({})
             lspconfig.lua_ls.setup({})
@@ -95,6 +95,7 @@ require("lazy").setup({
                         staticcheck = true,
                     },
                 },
+                single_file_support = true,
             })
             lspconfig.pyright.setup({
                 on_attach = function(client, bufnr)
@@ -157,10 +158,10 @@ require("lazy").setup({
                 }),
                 sources = cmp.config.sources({
                     { name = "path" },
-                    { name = "nvim_lsp",               keyword_length = 3 },
+                    { name = "nvim_lsp", keyword_length = 3 },
                     { name = "nvim_lsp_signature_help" },
-                    { name = "nvim_lua",               keyword_length = 2 },
-                    { name = "buffer",                 keyword_length = 2 },
+                    { name = "nvim_lua", keyword_length = 2 },
+                    { name = "buffer", keyword_length = 2 },
                     { name = "calc" },
                 }),
             })
@@ -171,7 +172,8 @@ require("lazy").setup({
         config = function()
             local ts = require("nvim-treesitter.configs")
             ts.setup({
-                ensure_installed = { "javascript", "typescript", "rust", "go", "lua", "yaml", "json", "toml", "ocaml" },
+                ensure_installed = { "javascript", "typescript", "rust", "go", "lua", "yaml", "json", "toml", "ocaml",
+                    "python" },
                 sync_install = false,
                 auto_install = true,
                 highlight = {
@@ -209,7 +211,7 @@ require("lazy").setup({
 
                 },
                 format_on_save = {
-                    timeout_ms = 500,
+                    timeout_ms = 200,
                     lsp_fallback = true,
                 },
             })
