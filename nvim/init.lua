@@ -13,7 +13,7 @@ vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
---vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 vim.api.nvim_set_option("updatetime", 500)
 
@@ -158,10 +158,10 @@ require("lazy").setup({
                 }),
                 sources = cmp.config.sources({
                     { name = "path" },
-                    { name = "nvim_lsp", keyword_length = 3 },
+                    { name = "nvim_lsp",               keyword_length = 3 },
                     { name = "nvim_lsp_signature_help" },
-                    { name = "nvim_lua", keyword_length = 2 },
-                    { name = "buffer", keyword_length = 2 },
+                    { name = "nvim_lua",               keyword_length = 2 },
+                    { name = "buffer",                 keyword_length = 2 },
                     { name = "calc" },
                 }),
             })
@@ -381,14 +381,12 @@ require("lazy").setup({
         end,
     },
     {
-        "rose-pine/neovim",
-        config = function(_, _)
-            local rose = require("rose-pine")
-            rose.setup({})
+        'bettervim/yugen.nvim',
+        config = function()
+            vim.cmd.colorscheme('yugen')
         end,
-    },
+    }
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("rose-pine")
