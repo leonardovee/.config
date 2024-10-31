@@ -158,10 +158,10 @@ require("lazy").setup({
                 }),
                 sources = cmp.config.sources({
                     { name = "path" },
-                    { name = "nvim_lsp",               keyword_length = 3 },
+                    { name = "nvim_lsp", keyword_length = 3 },
                     { name = "nvim_lsp_signature_help" },
-                    { name = "nvim_lua",               keyword_length = 2 },
-                    { name = "buffer",                 keyword_length = 2 },
+                    { name = "nvim_lua", keyword_length = 2 },
+                    { name = "buffer", keyword_length = 2 },
                     { name = "calc" },
                 }),
             })
@@ -381,12 +381,15 @@ require("lazy").setup({
         end,
     },
     {
-        'bettervim/yugen.nvim',
-        config = function()
-            vim.cmd.colorscheme('yugen')
+        "rose-pine/neovim",
+        config = function(_, _)
+            local rose = require("rose-pine")
+            rose.setup({})
         end,
-    }
+    },
+    { "github/copilot.vim" },
 })
 
 -- color.lua
 vim.opt.termguicolors = true
+vim.cmd.colorscheme("rose-pine")
