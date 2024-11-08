@@ -211,7 +211,7 @@ require("lazy").setup({
 
                 },
                 format_on_save = {
-                    timeout_ms = 200,
+                    timeout_ms = 400,
                     lsp_fallback = true,
                 },
             })
@@ -388,8 +388,10 @@ require("lazy").setup({
         end,
     },
     { "github/copilot.vim" },
+    { "ellisonleao/gruvbox.nvim" },
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("rose-pine")
+vim.cmd.colorscheme("gruvbox")
+vim.o.background = "light"

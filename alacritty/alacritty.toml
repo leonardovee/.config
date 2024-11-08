@@ -1,14 +1,14 @@
-import = ["/Users/leonardovee/.config/alacritty/base16-default-dark.toml"]
+general.import = ["/Users/vieira.leonardo/.config/alacritty/gruvbox-light.toml"]
 
 [font]
-size = 22.0
+size = 20.0
 
 [font.normal]
 family = "JetBrainsMono Nerd Font"
 #family = "FiraCode Nerd Font"
 
-[shell]
+[terminal.shell]
 program = "/opt/homebrew/bin/fish"
 
 [window]
-decorations = "none"
+#decorations = "none"
