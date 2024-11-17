@@ -389,6 +389,13 @@ require("lazy").setup({
     },
     { "github/copilot.vim" },
     { "ellisonleao/gruvbox.nvim" },
+    {
+      "akinsho/bufferline.nvim",
+      dependencies = 'nvim-tree/nvim-web-devicons',
+      config = function()
+          require("bufferline").setup()
+      end,
+    },
 })
 
 -- color.lua
