@@ -15,6 +15,6 @@ fish_add_path /Users/$USER/.asdf/shims
 # alias k="sudo kubectl"
 
 # opam configuration
-source /Users/leonardovee/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+source /Users/$USER/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 source /opt/homebrew/opt/asdf/share/fish/vendor_completions.d/asdf.fish

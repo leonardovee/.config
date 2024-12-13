@@ -83,6 +83,7 @@ require("lazy").setup({
             lspconfig.ocamllsp.setup({})
             lspconfig.lua_ls.setup({})
             lspconfig.rust_analyzer.setup({})
+            lspconfig.clojure_lsp.setup({})
             lspconfig.gopls.setup({
                 cmd = { "gopls", "serve" },
                 filetypes = { "go", "gomod" },
@@ -313,18 +314,15 @@ require("lazy").setup({
                     })
                     :find()
             end
-
             vim.keymap.set("n", "<C-e>", function()
                 toggle_telescope(harpoon:list())
             end)
-
             vim.keymap.set("n", "<leader>a", function()
                 harpoon:list():add()
             end)
             vim.keymap.set("n", "<leader>q", function()
                 harpoon:list():clear()
             end)
-
             vim.keymap.set("n", "<C-t>", function()
                 harpoon:list():select(2)
             end)
@@ -334,7 +332,6 @@ require("lazy").setup({
             vim.keymap.set("n", "<C-s>", function()
                 harpoon:list():select(4)
             end)
-
             vim.keymap.set("n", "<C-S-P>", function()
                 harpoon:list():prev()
             end)
@@ -388,14 +385,7 @@ require("lazy").setup({
         end,
     },
     { "github/copilot.vim" },
-    { "ellisonleao/gruvbox.nvim" },
-    {
-      "akinsho/bufferline.nvim",
-      --dependencies = 'nvim-tree/nvim-web-devicons',
-      config = function()
-          require("bufferline").setup()
-      end,
-    },
+    { "Olical/conjure" },
 })
 
 -- color.lua
