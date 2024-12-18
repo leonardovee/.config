@@ -4,11 +4,13 @@ general.import = ["/Users/vieira.leonardo/.config/alacritty/base16-default-dark.
 size = 18.0
 
 [font.normal]
-#family = "JetBrainsMono Nerd Font"
-family = "FiraCode Nerd Font"
+family = "JetBrainsMono Nerd Font"
 
 [terminal.shell]
 program = "/opt/homebrew/bin/fish"
 
-[window]
+#[window]
 #decorations = "none"
+
+[env]
+TERM = "xterm-256color"
