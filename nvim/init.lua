@@ -1,4 +1,4 @@
--- set.lua
+-- set
 vim.opt.guicursor = ""
 vim.opt.nu = true
 vim.opt.tabstop = 4
@@ -13,17 +13,16 @@ vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 vim.api.nvim_set_option("updatetime", 500)
 
 vim.g.mapleader = " "
---vim.g.loaded_netrw = 1
---vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
 
--- keymap.lua
+-- remaps
 local M = {}
-
 local function bind(op, outer_opts)
     outer_opts = outer_opts or { noremap = true }
     return function(lhs, rhs, opts)
@@ -38,7 +37,6 @@ M.vnoremap = bind("v")
 M.xnoremap = bind("x")
 M.inoremap = bind("i")
 
--- remap.lua
 local nnoremap = M.nnoremap
 
 nnoremap("<leader>te", "<cmd>:Telescope<CR>")
@@ -57,7 +55,7 @@ nnoremap("<leader>dt", "<cmd>:DapStepOut<CR>")
 nnoremap("<leader>dr", "<cmd>:DapToggleRepl<CR>")
 nnoremap("<leader>dp", "<cmd>:DapToggleBreakpoint<CR>")
 
--- init.lua
+-- plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -71,8 +69,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- plugins folder
 require("lazy").setup({
+    -- lsp and stuff
     {
         "neovim/nvim-lspconfig",
         config = function()
@@ -159,10 +157,10 @@ require("lazy").setup({
                 }),
                 sources = cmp.config.sources({
                     { name = "path" },
-                    { name = "nvim_lsp", keyword_length = 3 },
+                    { name = "nvim_lsp",               keyword_length = 3 },
                     { name = "nvim_lsp_signature_help" },
-                    { name = "nvim_lua", keyword_length = 2 },
-                    { name = "buffer", keyword_length = 2 },
+                    { name = "nvim_lua",               keyword_length = 2 },
+                    { name = "buffer",                 keyword_length = 2 },
                     { name = "calc" },
                 }),
             })
@@ -281,10 +279,70 @@ require("lazy").setup({
             })
         end,
     },
+
+    -- debugger
+    -- TODO: gotta config more languages
+    {
+        "mfussenegger/nvim-dap",
+        dependencies = {
+            "leoluz/nvim-dap-go",
+            "rcarriga/nvim-dap-ui",
+            "nvim-neotest/nvim-nio",
+        },
+        config = function()
+            require("dap-go").setup()
+
+            local dap, dapui = require("dap"), require("dapui")
+            dapui.setup()
+
+            dap.listeners.after.event_initialized["dapui_config"] = function()
+                dapui.open()
+            end
+
+            dap.listeners.before.event_terminated["dapui_config"] = function()
+                dapui.close()
+            end
+
+            dap.listeners.before.event_exited["dapui_config"] = function()
+                dapui.close()
+            end
+        end,
+    },
+
+
+    {
+        "ThePrimeagen/refactoring.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+            require("refactoring").setup()
+        end,
+    },
+
+    -- useful stuff
+    { "airblade/vim-gitgutter" },
+    { "github/copilot.vim" },
     {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.5",
         dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("telescope").setup({
+                defaults = {
+                    file_ignore_patterns = {
+                        "node_modules", "build", "dist", "yarn.lock", "package-lock.json", "lazy-lock.json", "Cargo.lock",
+                        "target",
+                    },
+                },
+                pickers = {
+                    find_files = {
+                        hidden = true
+                    }
+                }
+            })
+        end,
     },
     {
         "ThePrimeagen/harpoon",
@@ -340,43 +398,8 @@ require("lazy").setup({
             end)
         end,
     },
-    {
-        "mfussenegger/nvim-dap",
-        dependencies = {
-            "leoluz/nvim-dap-go",
-            "rcarriga/nvim-dap-ui",
-            "nvim-neotest/nvim-nio",
-        },
-        config = function()
-            require("dap-go").setup()
 
-            local dap, dapui = require("dap"), require("dapui")
-            dapui.setup()
-
-            dap.listeners.after.event_initialized["dapui_config"] = function()
-                dapui.open()
-            end
-
-            dap.listeners.before.event_terminated["dapui_config"] = function()
-                dapui.close()
-            end
-
-            dap.listeners.before.event_exited["dapui_config"] = function()
-                dapui.close()
-            end
-        end,
-    },
-    { "airblade/vim-gitgutter" },
-    {
-        "ThePrimeagen/refactoring.nvim",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-treesitter/nvim-treesitter",
-        },
-        config = function()
-            require("refactoring").setup()
-        end,
-    },
+    -- themes
     {
         "rose-pine/neovim",
         config = function(_, _)
@@ -384,10 +407,15 @@ require("lazy").setup({
             rose.setup({})
         end,
     },
-    { "github/copilot.vim" },
-    { "Olical/conjure" },
+    {
+        "briones-gabriel/darcula-solid.nvim",
+        dependencies = {
+            "rktjmp/lush.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+    },
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("rose-pine-main")
+vim.cmd.colorscheme("darcula-solid")
