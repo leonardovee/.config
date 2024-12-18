@@ -76,12 +76,14 @@ require("lazy").setup({
         config = function()
             local lspconfig = require("lspconfig")
             local util = require("lspconfig.util")
+
             lspconfig.ts_ls.setup({})
             lspconfig.clangd.setup({})
             lspconfig.ocamllsp.setup({})
             lspconfig.lua_ls.setup({})
             lspconfig.rust_analyzer.setup({})
             lspconfig.clojure_lsp.setup({})
+
             lspconfig.gopls.setup({
                 cmd = { "gopls", "serve" },
                 filetypes = { "go", "gomod" },
@@ -96,6 +98,7 @@ require("lazy").setup({
                 },
                 single_file_support = true,
             })
+
             lspconfig.pyright.setup({
                 on_attach = function(client, bufnr)
                     custom_attach(client, bufnr, { allowed_clients = { "efm" } })
@@ -112,6 +115,7 @@ require("lazy").setup({
                     },
                 },
             })
+
             vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
             vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
             vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
