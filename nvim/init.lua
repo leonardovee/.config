@@ -214,7 +214,7 @@ require("lazy").setup({
 
                 },
                 format_on_save = {
-                    timeout_ms = 400,
+                    timeout_ms = 600,
                     lsp_fallback = true,
                 },
             })
@@ -411,15 +411,10 @@ require("lazy").setup({
             rose.setup({})
         end,
     },
-    {
-        "briones-gabriel/darcula-solid.nvim",
-        dependencies = {
-            "rktjmp/lush.nvim",
-            "nvim-treesitter/nvim-treesitter",
-        },
-    },
+    { "ellisonleao/gruvbox.nvim", priority = 1000, config = true, opts = ... }
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("darcula-solid")
+vim.cmd.colorscheme("gruvbox")
+vim.o.background = "light"
