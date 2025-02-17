@@ -14,6 +14,9 @@ fish_add_path /Users/$USER/.asdf/shims
 
 # alias k="sudo kubectl"
 
+set -x EDITOR nvim
+set -x VISUAL $EDITOR
+
 # opam configuration
 source /Users/$USER/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
