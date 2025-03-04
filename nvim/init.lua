@@ -327,7 +327,6 @@ require("lazy").setup({
 
     -- useful stuff
     { "airblade/vim-gitgutter" },
-    { "github/copilot.vim" },
     {
         "nvim-telescope/telescope.nvim",
         tag = "0.1.5",
@@ -411,10 +410,15 @@ require("lazy").setup({
             rose.setup({})
         end,
     },
-    { "ellisonleao/gruvbox.nvim", priority = 1000, config = true, opts = ... }
+    {
+        "briones-gabriel/darcula-solid.nvim",
+        dependencies = {
+            "rktjmp/lush.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+    },
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("gruvbox")
-vim.o.background = "light"
+vim.cmd.colorscheme("darcula-solid")

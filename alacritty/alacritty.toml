@@ -1,7 +1,7 @@
-general.import = ["/Users/vieira.leonardo/.config/alacritty/gruvbox-light.toml"]
+general.import = ["/Users/vieira.leonardo/.config/alacritty/base16-default-dark.toml"]
 
 [font]
-size = 20.0
+size = 24.0
 
 [font.normal]
 family = "FiraCode Nerd Font"
