@@ -417,8 +417,11 @@ require("lazy").setup({
             "nvim-treesitter/nvim-treesitter",
         },
     },
+    {
+        "ayu-theme/ayu-vim"
+    },
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("darcula-solid")
+vim.cmd.colorscheme("ayu")

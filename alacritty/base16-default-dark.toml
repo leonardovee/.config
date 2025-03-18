@@ -25,5 +25,6 @@ yellow = "#f7ca88"
 [colors.primary]
 #background = "#1c1c1c"
 #background = "#000000"
-background = "#262627"
+background = "#0f141a"
+#background = "#262627"
 foreground = "#d8d8d8"
