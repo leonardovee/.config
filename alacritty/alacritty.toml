@@ -1,4 +1,4 @@
-general.import = ["/Users/vieira.leonardo/.config/alacritty/base16-default-dark.toml"]
+general.import = ["/Users/vieira.leonardo/.config/alacritty/gruvbox-dark.toml"]
 
 [font]
 size = 18.0

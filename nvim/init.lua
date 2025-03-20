@@ -14,6 +14,7 @@ vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
 -- vim.opt.relativenumber = true
+vim.opt.laststatus = 2
 
 vim.api.nvim_set_option("updatetime", 500)
 
@@ -403,25 +404,50 @@ require("lazy").setup({
     },
 
     -- themes
+    { "ellisonleao/gruvbox.nvim",     priority = 1000, config = true },
+    { "shinchu/lightline-gruvbox.vim" },
     {
-        "rose-pine/neovim",
-        config = function(_, _)
-            local rose = require("rose-pine")
-            rose.setup({})
-        end,
-    },
-    {
-        "briones-gabriel/darcula-solid.nvim",
-        dependencies = {
-            "rktjmp/lush.nvim",
-            "nvim-treesitter/nvim-treesitter",
-        },
-    },
-    {
-        "ayu-theme/ayu-vim"
-    },
+        'itchyny/lightline.vim',
+        lazy = false,
+        config = function()
+            vim.o.showmode = false
+            vim.g.lightline = {
+                colorscheme = 'gruvbox',
+                active = {
+                    left = {
+                        { 'mode',     'paste' },
+                        { 'readonly', 'filename', 'modified' }
+                    },
+                    right = {
+                        { 'lineinfo' },
+                        { 'percent' },
+                        { 'fileencoding', 'filetype' }
+                    },
+                },
+                component_function = {
+                    filename = 'LightlineFilename'
+                },
+            }
+            function LightlineFilenameInLua(opts)
+                if vim.fn.expand('%:t') == '' then
+                    return '[No Name]'
+                else
+                    return vim.fn.getreg('%')
+                end
+            end
+
+            vim.api.nvim_exec(
+                [[
+				function! g:LightlineFilename()
+					return v:lua.LightlineFilenameInLua()
+				endfunction
+				]],
+                true
+            )
+        end
+    }
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("ayu")
+vim.cmd.colorscheme("gruvbox")
