@@ -1,10 +1,11 @@
 general.import = ["/Users/vieira.leonardo/.config/alacritty/gruvbox-dark.toml"]
 
 [font]
-size = 18.0
+size = 20.0
 
 [font.normal]
-family = "FiraCode Nerd Font"
+family = "Iosevka"
+style = "Extended"
 
 [terminal.shell]
 program = "/opt/homebrew/bin/fish"

@@ -404,48 +404,7 @@ require("lazy").setup({
     },
 
     -- themes
-    { "ellisonleao/gruvbox.nvim",     priority = 1000, config = true },
-    { "shinchu/lightline-gruvbox.vim" },
-    {
-        'itchyny/lightline.vim',
-        lazy = false,
-        config = function()
-            vim.o.showmode = false
-            vim.g.lightline = {
-                colorscheme = 'gruvbox',
-                active = {
-                    left = {
-                        { 'mode',     'paste' },
-                        { 'readonly', 'filename', 'modified' }
-                    },
-                    right = {
-                        { 'lineinfo' },
-                        { 'percent' },
-                        { 'fileencoding', 'filetype' }
-                    },
-                },
-                component_function = {
-                    filename = 'LightlineFilename'
-                },
-            }
-            function LightlineFilenameInLua(opts)
-                if vim.fn.expand('%:t') == '' then
-                    return '[No Name]'
-                else
-                    return vim.fn.getreg('%')
-                end
-            end
-
-            vim.api.nvim_exec(
-                [[
-				function! g:LightlineFilename()
-					return v:lua.LightlineFilenameInLua()
-				endfunction
-				]],
-                true
-            )
-        end
-    }
+    { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
 })
 
 -- color.lua
