@@ -1,14 +1,14 @@
-general.import = ["/Users/vieira.leonardo/.config/alacritty/gruvbox-dark.toml"]
+general.import = ["/home/leonardovee/.config/alacritty/gruvbox-dark.toml"]
 
 [font]
-size = 20.0
+size = 18.0
 
 [font.normal]
 family = "Iosevka"
 style = "Extended"
 
 [terminal.shell]
-program = "/opt/homebrew/bin/fish"
+program = "/usr/bin/fish"
 
 #[window]
 #decorations = "none"
