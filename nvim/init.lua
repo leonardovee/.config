@@ -327,6 +327,7 @@ require("lazy").setup({
     },
 
     -- useful stuff
+    { "nvim-treesitter/nvim-treesitter-context" },
     { "airblade/vim-gitgutter" },
     {
         "nvim-telescope/telescope.nvim",
@@ -410,3 +411,4 @@ require("lazy").setup({
 -- color.lua
 vim.opt.termguicolors = true
 vim.cmd.colorscheme("gruvbox")
+vim.o.background = "light"

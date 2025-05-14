@@ -1,4 +1,5 @@
 general.import = ["/home/leonardovee/.config/alacritty/gruvbox-dark.toml"]
+#general.import = ["/Users/vieira.leonardo/.config/alacritty/gruvbox-light.toml"]
 
 [font]
 size = 18.0
