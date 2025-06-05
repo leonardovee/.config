@@ -405,10 +405,17 @@ require("lazy").setup({
     },
 
     -- themes
-    { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
+    -- { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
+    {
+        "briones-gabriel/darcula-solid.nvim",
+        dependencies = {
+            "rktjmp/lush.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+    },
 })
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("gruvbox")
-vim.o.background = "light"
+vim.cmd.colorscheme("darcula-solid")
+-- vim.o.background = "light"

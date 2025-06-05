@@ -4,6 +4,7 @@ fish_add_path /Users/$USER/Library/Python/3.9/bin
 fish_add_path /Users/$USER/Library/Python/3.10/bin
 fish_add_path /Users/$USER/.cargo/bin
 fish_add_path /Users/$USER/.asdf/shims
+fish_add_path /Users/$USER/.local/bin
 
 set -x EDITOR nvim
 set -x VISUAL $EDITOR
