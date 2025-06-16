@@ -1,3 +1,7 @@
+function nvm
+    bass source ~/.nvm/nvm.sh --no-use ';' nvm $argv
+end
+
 fish_add_path /opt/homebrew/bin
 fish_add_path /usr/local/bin
 fish_add_path /Users/$USER/Library/Python/3.9/bin
