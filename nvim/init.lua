@@ -7,13 +7,13 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
---vim.opt.so = 999
+vim.opt.so = 999
 vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 vim.opt.laststatus = 2
 
 vim.api.nvim_set_option("updatetime", 500)
@@ -79,11 +79,8 @@ require("lazy").setup({
             local util = require("lspconfig.util")
 
             lspconfig.ts_ls.setup({})
-            lspconfig.clangd.setup({})
-            lspconfig.ocamllsp.setup({})
             lspconfig.lua_ls.setup({})
             lspconfig.rust_analyzer.setup({})
-            lspconfig.clojure_lsp.setup({})
 
             lspconfig.gopls.setup({
                 cmd = { "gopls", "serve" },
@@ -98,23 +95,6 @@ require("lazy").setup({
                     },
                 },
                 single_file_support = true,
-            })
-
-            lspconfig.pyright.setup({
-                on_attach = function(client, bufnr)
-                    custom_attach(client, bufnr, { allowed_clients = { "efm" } })
-                end,
-                settings = {
-                    pyright = {
-                        disableOrganizeImports = false,
-                        analysis = {
-                            useLibraryCodeForTypes = true,
-                            autoSearchPaths = true,
-                            diagnosticMode = "workspace",
-                            autoImportCompletions = true,
-                        },
-                    },
-                },
             })
 
             vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
@@ -347,60 +327,6 @@ require("lazy").setup({
                     }
                 }
             })
-        end,
-    },
-    {
-        "ThePrimeagen/harpoon",
-        branch = "harpoon2",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
-        config = function()
-            local harpoon = require("harpoon")
-            harpoon:setup()
-
-            local conf = require("telescope.config").values
-            local function toggle_telescope(harpoon_files)
-                local file_paths = {}
-                for _, item in ipairs(harpoon_files.items) do
-                    table.insert(file_paths, item.value)
-                end
-
-                require("telescope.pickers")
-                    .new({}, {
-                        prompt_title = "Harpoon",
-                        finder = require("telescope.finders").new_table({
-                            results = file_paths,
-                        }),
-                        previewer = conf.file_previewer({}),
-                        sorter = conf.generic_sorter({}),
-                    })
-                    :find()
-            end
-            vim.keymap.set("n", "<C-e>", function()
-                toggle_telescope(harpoon:list())
-            end)
-            vim.keymap.set("n", "<leader>a", function()
-                harpoon:list():add()
-            end)
-            vim.keymap.set("n", "<leader>q", function()
-                harpoon:list():clear()
-            end)
-            vim.keymap.set("n", "<C-t>", function()
-                harpoon:list():select(2)
-            end)
-            vim.keymap.set("n", "<C-n>", function()
-                harpoon:list():select(3)
-            end)
-            vim.keymap.set("n", "<C-s>", function()
-                harpoon:list():select(4)
-            end)
-            vim.keymap.set("n", "<C-S-P>", function()
-                harpoon:list():prev()
-            end)
-            vim.keymap.set("n", "<C-S-N>", function()
-                harpoon:list():next()
-            end)
         end,
     },
 
