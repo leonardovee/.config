@@ -343,5 +343,5 @@ require("lazy").setup({
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("darcula-solid")
---vim.o.background = "light"
+vim.cmd.colorscheme("gruvbox")
+vim.o.background = "light"
