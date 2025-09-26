@@ -82,6 +82,11 @@ require("lazy").setup({
             lspconfig.lua_ls.setup({})
             lspconfig.rust_analyzer.setup({})
 
+            lspconfig.clangd.setup{
+              cmd = { "clangd", "--compile-commands-dir=build" },
+              root_dir = util.root_pattern("compile_commands.json", ".git"),
+            }
+
             lspconfig.gopls.setup({
                 cmd = { "gopls", "serve" },
                 filetypes = { "go", "gomod" },
@@ -343,5 +348,5 @@ require("lazy").setup({
 
 -- color.lua
 vim.opt.termguicolors = true
-vim.cmd.colorscheme("gruvbox")
-vim.o.background = "light"
+vim.cmd.colorscheme("darcula-solid")
+--vim.o.background = "light"
