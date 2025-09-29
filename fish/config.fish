@@ -19,3 +19,9 @@ set -U fish_greeting
 #source /Users/$USER/.config/fish/completions/asdf.fish
 
 fzf --fish | source
+
+source /Users/$USER/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+source /Users/$USER/.config/fish/completions/asdf.fish
+
+# uv
+fish_add_path "/Users/vieira.leonardo/.local/bin"
