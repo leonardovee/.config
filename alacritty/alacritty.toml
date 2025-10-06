@@ -1,11 +1,11 @@
-general.import = ["/Users/vieira.leonardo/.config/alacritty/base16-default-dark.toml"]
+general.import = ["/home/leonardovee/.config/alacritty/base16-default-dark.toml"]
 
 [font]
-size = 12.0
+size = 10.0
 
 [font.normal]
-family = "Iosevka"
-style = "Extended"
+family = "FiraCode"
+style = "SemiBold"
 
 [terminal.shell]
 program = "fish"

@@ -26,6 +26,7 @@ exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id "setxkbmap br thinkpad"
 exec --no-startup-id "xset r rate 200 35"
 exec --no-startup-id "brightnessctl set 70%"
+exec --no-startup-id "redshift -P -O 4000"
 
 exec --no-startup-id clipmenud
 bindsym $mod+c exec --no-startup-id clipmenu
@@ -204,4 +205,5 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         status_command i3status
+        position top
 }
