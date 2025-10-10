@@ -7,7 +7,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
-vim.opt.so = 999
+--vim.opt.so = 999
 vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
@@ -82,9 +82,9 @@ require("lazy").setup({
             lspconfig.lua_ls.setup({})
             lspconfig.rust_analyzer.setup({})
 
-            lspconfig.clangd.setup{
-              cmd = { "clangd", "--compile-commands-dir=build" },
-              root_dir = util.root_pattern("compile_commands.json", ".git"),
+            lspconfig.clangd.setup {
+                cmd = { "clangd", "--compile-commands-dir=build" },
+                root_dir = util.root_pattern("compile_commands.json", ".git"),
             }
 
             lspconfig.gopls.setup({
@@ -323,10 +323,10 @@ require("lazy").setup({
                 defaults = {
                     layout_strategy = "vertical",
                     layout_config = {
-                      height = vim.o.lines,
-                      width = vim.o.columns,
-                      prompt_position = "bottom",
-                      preview_height = 0.6,
+                        height = vim.o.lines,
+                        width = vim.o.columns,
+                        prompt_position = "bottom",
+                        preview_height = 0.6,
                     },
                     file_ignore_patterns = {
                         "node_modules", "build", "dist", "yarn.lock", "package-lock.json", "lazy-lock.json", "Cargo.lock",
@@ -343,7 +343,6 @@ require("lazy").setup({
     },
 
     -- themes
-    { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
     {
         "briones-gabriel/darcula-solid.nvim",
         dependencies = {
