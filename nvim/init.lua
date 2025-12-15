@@ -7,7 +7,6 @@ vim.opt.incsearch = true
 vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
-vim.opt.pumheight = 15
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
 vim.opt.laststatus = 2
