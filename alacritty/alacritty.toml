@@ -1,17 +1,14 @@
-general.import = ["/home/leonardocee/.config/alacritty/base16-default-dark.toml"]
+general.import = ["~/.config/alacritty/base16-default-dark.toml"]
 
 [font]
-size = 14.0
+size = 16.0
 
 [font.normal]
-family = "FiraCodeNerdFont"
-style = "SemiBold"
+family = "Iosevka Nerd Font"
+style = "Regular"
 
 [terminal.shell]
 program = "fish"
-
-#[window]
-#decorations = "none"
 
 [env]
 TERM = "xterm-256color"
