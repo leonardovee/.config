@@ -1,10 +1,10 @@
-general.import = ["/home/leonardovee/.config/alacritty/base16-default-dark.toml"]
+general.import = ["/home/leonardocee/.config/alacritty/base16-default-dark.toml"]
 
 [font]
-size = 10.0
+size = 14.0
 
 [font.normal]
-family = "FiraCode"
+family = "FiraCodeNerdFont"
 style = "SemiBold"
 
 [terminal.shell]
