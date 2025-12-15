@@ -7,28 +7,43 @@ vim.opt.incsearch = true
 vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
+vim.opt.pumheight = 15
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
 vim.opt.laststatus = 2
 
 -- api
 vim.api.nvim_set_option("updatetime", 500)
-vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-        callback = function(ev)
-                vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(args)
+                local client = vim.lsp.get_client_by_id(args.data.client_id)
+                local buffer = args.buf
 
-                local opts = { buffer = ev.buf }
-                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-                vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-                vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-                vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
-                vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+                -- TODO: this is slow
+                if client.server_capabilities.completionProvider then
+                        local triggers = client.server_capabilities.completionProvider.triggerCharacters or {}
+                        for i = string.byte('a'), string.byte('z') do
+                                table.insert(triggers, string.char(i))
+                        end
+                        for i = string.byte('A'), string.byte('Z') do
+                                table.insert(triggers, string.char(i))
+                        end
+                end
+
+                vim.lsp.completion.enable(true, client.id, buffer, {
+                        autotrigger = true,
+                })
+
+                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer })
+                vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer })
+                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = buffer })
+                vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer })
+                vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { buffer = buffer })
+                vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = buffer })
+                vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = buffer })
                 vim.keymap.set("n", "<space>f", function()
                         vim.lsp.buf.format({ async = true })
-                end, opts)
+                end, { buffer = buffer })
         end,
 })
 
@@ -92,64 +107,25 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-        -- lsp
         {
-                "hrsh7th/nvim-cmp",
-                dependencies = {
-                        "neovim/nvim-lspconfig",
-                        "hrsh7th/cmp-nvim-lsp",
-                        "hrsh7th/cmp-buffer",
-                        "hrsh7th/cmp-path",
-                },
+                "williamboman/mason.nvim",
+                opts = {},
                 config = function()
-                        local cmp = require("cmp")
-                        cmp.setup({
-                                mapping = cmp.mapping.preset.insert({
-                                        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                                        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                                        ["<C-Space>"] = cmp.mapping.complete(),
-                                        ["<C-e>"] = cmp.mapping.abort(),
-                                        ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                                }),
-                                sources = cmp.config.sources({
-                                        { name = "path" },
-                                        { name = "nvim_lsp",               keyword_length = 3 },
-                                        { name = "nvim_lsp_signature_help" },
-                                        { name = "nvim_lua",               keyword_length = 2 },
-                                        { name = "buffer",                 keyword_length = 2 },
-                                        { name = "calc" },
-                                }),
-                        })
+                        local mason = require("mason")
+                        mason.setup({})
                 end,
         },
         {
                 "nvim-treesitter/nvim-treesitter",
                 config = function()
-                        local ts = require("nvim-treesitter.configs")
-                        ts.setup({
-                                ensure_installed = { "javascript", "typescript", "rust", "go", "lua", "yaml", "json", "toml", "ocaml", "c", "cpp", "python" },
-                                sync_install = false,
-                                auto_install = true,
-                                highlight = {
-                                        enable = true,
-                                        additional_vim_regex_highlighting = false,
-                                },
-                        })
-                end,
-        },
-        {
-                "williamboman/mason.nvim",
-                opts = {},
-                config = function(_, _)
-                        local mason = require("mason")
-                        mason.setup()
+                        local treesitter = require("nvim-treesitter.configs")
+                        treesitter.setup({ auto_install = true })
                 end,
         },
         {
                 "stevearc/conform.nvim",
-                opts = {},
                 event = "VeryLazy",
-                config = function(_, _)
+                config = function()
                         local conform = require("conform")
                         conform.setup({
                                 formatters_by_ft = {
@@ -205,26 +181,12 @@ require("lazy").setup({
 
                                 return args
                         end
-
-                        conform.formatters.beautysh = {
-                                prepend_args = function()
-                                        return { '--indent-size', '2', '--force-function-style', 'fnpar' }
-                                end
-                        }
-
-
-                        conform.formatters['ocaml-format'] = {
-                                prepend_args = function()
-                                        return { '-i', '--enable-outside-detected-project' }
-                                end
-                        }
                 end,
         },
         {
                 "ray-x/lsp_signature.nvim",
                 event = "VeryLazy",
-                opts = {},
-                config = function(_, _)
+                config = function()
                         local signature = require("lsp_signature")
                         signature.setup({
                                 doc_lines = 0,
@@ -235,8 +197,6 @@ require("lazy").setup({
                         })
                 end,
         },
-
-        -- debugger
         {
                 "mfussenegger/nvim-dap",
                 dependencies = {
@@ -245,6 +205,7 @@ require("lazy").setup({
                         "nvim-neotest/nvim-nio",
                 },
                 config = function()
+                        -- TODO: configure the delve adapter without using dap-go
                         require("dap-go").setup()
 
                         local dap, dapui = require("dap"), require("dapui")
@@ -288,9 +249,11 @@ require("lazy").setup({
                         end
                 end,
         },
-
-        -- useful stuff
-        { "airblade/vim-gitgutter" },
+        {
+                "airblade/vim-gitgutter",
+                config = function()
+                end
+        },
         {
                 "nvim-telescope/telescope.nvim",
                 dependencies = { "nvim-lua/plenary.nvim" },
@@ -317,15 +280,13 @@ require("lazy").setup({
                         })
                 end,
         },
-
-        -- theme
         {
                 'bettervim/yugen.nvim',
                 config = function()
-                        vim.cmd.colorscheme('yugen')
                 end,
         }
 })
 
 -- color.lua
 vim.opt.termguicolors = true
+vim.cmd.colorscheme('yugen')
