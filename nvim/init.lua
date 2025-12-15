@@ -13,37 +13,37 @@ vim.opt.laststatus = 2
 
 -- api
 vim.api.nvim_set_option("updatetime", 500)
-vim.api.nvim_create_autocmd('LspAttach', {
-        callback = function(args)
-                local client = vim.lsp.get_client_by_id(args.data.client_id)
-                local buffer = args.buf
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		local buffer = args.buf
 
-                -- TODO: this is slow
-                if client.server_capabilities.completionProvider then
-                        local triggers = client.server_capabilities.completionProvider.triggerCharacters or {}
-                        for i = string.byte('a'), string.byte('z') do
-                                table.insert(triggers, string.char(i))
-                        end
-                        for i = string.byte('A'), string.byte('Z') do
-                                table.insert(triggers, string.char(i))
-                        end
-                end
+		-- TODO: this is slow
+		if client.server_capabilities.completionProvider then
+			local triggers = client.server_capabilities.completionProvider.triggerCharacters or {}
+			for i = string.byte("a"), string.byte("z") do
+				table.insert(triggers, string.char(i))
+			end
+			for i = string.byte("A"), string.byte("Z") do
+				table.insert(triggers, string.char(i))
+			end
+		end
 
-                vim.lsp.completion.enable(true, client.id, buffer, {
-                        autotrigger = true,
-                })
+		vim.lsp.completion.enable(true, client.id, buffer, {
+			autotrigger = true,
+		})
 
-                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer })
-                vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer })
-                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = buffer })
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer })
-                vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { buffer = buffer })
-                vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = buffer })
-                vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = buffer })
-                vim.keymap.set("n", "<space>f", function()
-                        vim.lsp.buf.format({ async = true })
-                end, { buffer = buffer })
-        end,
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = buffer })
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buffer })
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = buffer })
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buffer })
+		vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, { buffer = buffer })
+		vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, { buffer = buffer })
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = buffer })
+		vim.keymap.set("n", "<space>f", function()
+			vim.lsp.buf.format({ async = true })
+		end, { buffer = buffer })
+	end,
 })
 
 -- g
@@ -70,222 +70,219 @@ vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
 -- lsp
 vim.lsp.config("lua_ls", {})
 vim.lsp.config("ts_ls", { root_markers = { "package.json" } })
-vim.lsp.config("rust_analyzer", { root_markers = { "Cargo.toml" } })
+vim.lsp.config("rust_analyzer", {
+	cmd = { "rust-analyzer" },
+	filetypes = { "rust" },
+	root_markers = { "Cargo.toml" },
+})
 vim.lsp.config("clangd", {
-        cmd = { "clangd", "--compile-commands-dir=build" },
-        root_markers = { "compile_commands.json" }
+	cmd = { "clangd", "--compile-commands-dir=build" },
+	filetypes = { "c", "cpp" },
+	root_markers = { "compile_commands.json" },
 })
 vim.lsp.config("gopls", {
-        cmd = { "gopls", "serve" },
-        filetypes = { "go", "gomod" },
-        root_markers = { "go.work", "go.mod" },
-        settings = {
-                gopls = {
-                        analyses = {
-                                unusedparams = true,
-                        },
-                        staticcheck = true,
-                },
-        },
-        single_file_support = true,
+	cmd = { "gopls", "serve" },
+	filetypes = { "go", "gomod" },
+	root_markers = { "go.work", "go.mod" },
+	settings = {
+		gopls = {
+			analyses = {
+				unusedparams = true,
+			},
+			staticcheck = true,
+		},
+	},
+	single_file_support = true,
 })
 vim.lsp.enable({ "ts_ls", "lua_ls", "rust_analyzer", "clangd", "gopls" })
 
 -- plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-        vim.fn.system({
-                "git",
-                "clone",
-                "--filter=blob:none",
-                "https://github.com/folke/lazy.nvim.git",
-                "--branch=stable",
-                lazypath,
-        })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-        {
-                "williamboman/mason.nvim",
-                opts = {},
-                config = function()
-                        local mason = require("mason")
-                        mason.setup({})
-                end,
-        },
-        {
-                "nvim-treesitter/nvim-treesitter",
-                config = function()
-                        local treesitter = require("nvim-treesitter.configs")
-                        treesitter.setup({ auto_install = true })
-                end,
-        },
-        {
-                "stevearc/conform.nvim",
-                event = "VeryLazy",
-                config = function()
-                        local conform = require("conform")
-                        conform.setup({
-                                formatters_by_ft = {
-                                        lua = { "stylua" },
-                                        python = { "isort", "black" },
-                                        go = { "goimports", "gofmt" },
-                                        json = { "prettier" },
-                                        typescript = { 'prettier' },
-                                        typescriptreact = { 'prettier' },
-                                        javascript = { 'prettier' },
-                                        javascriptreact = { 'prettier' },
-                                        ocaml = { 'ocamlformat' },
+	{
+		"williamboman/mason.nvim",
+		opts = {},
+		config = function()
+			local mason = require("mason")
+			mason.setup({})
+		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		config = function()
+			local treesitter = require("nvim-treesitter.configs")
+			treesitter.setup({ auto_install = true })
+		end,
+	},
+	{
+		"stevearc/conform.nvim",
+		event = "VeryLazy",
+		config = function()
+			local conform = require("conform")
+			conform.setup({
+				formatters_by_ft = {
+					lua = { "stylua" },
+					go = { "goimports", "gofmt" },
+					json = { "prettier" },
+					typescript = { "prettier" },
+					typescriptreact = { "prettier" },
+					javascript = { "prettier" },
+					javascriptreact = { "prettier" },
+				},
+				format_on_save = {
+					timeout_ms = 500,
+					lsp_fallback = true,
+				},
+			})
+			require("conform.formatters.prettier").args = function(_, ctx)
+				local prettier_roots = { ".prettierrc", ".prettierrc.json", "prettier.config.js" }
+				local args = { "--stdin-filepath", "$FILENAME" }
+				local config_path = vim.fn.stdpath("config")
 
-                                },
-                                format_on_save = {
-                                        timeout_ms = 1500,
-                                        lsp_fallback = true,
-                                },
-                        })
-                        require('conform.formatters.prettier').args = function(_, ctx)
-                                local prettier_roots = { '.prettierrc', '.prettierrc.json', 'prettier.config.js' }
-                                local args = { '--stdin-filepath', '$FILENAME' }
-                                local config_path = vim.fn.stdpath('config')
+				local localPrettierConfig = vim.fs.find(prettier_roots, {
+					upward = true,
+					path = ctx.dirname,
+					type = "file",
+				})[1]
 
-                                local localPrettierConfig = vim.fs.find(prettier_roots, {
-                                        upward = true,
-                                        path = ctx.dirname,
-                                        type = 'file'
-                                })[1]
-                                local globalPrettierConfig = vim.fs.find(prettier_roots, {
-                                        path = type(config_path) == 'string' and config_path or config_path[1],
-                                        type = 'file'
-                                })[1]
-                                local disableGlobalPrettierConfig = os.getenv('DISABLE_GLOBAL_PRETTIER_CONFIG')
+				local globalPrettierConfig = vim.fs.find(prettier_roots, {
+					path = type(config_path) == "string" and config_path or config_path[1],
+					type = "file",
+				})[1]
 
-                                -- Project config takes precedence over global config
-                                if localPrettierConfig then
-                                        vim.list_extend(args, { '--config', localPrettierConfig })
-                                elseif globalPrettierConfig and not disableGlobalPrettierConfig then
-                                        vim.list_extend(args, { '--config', globalPrettierConfig })
-                                end
+				local disableGlobalPrettierConfig = os.getenv("DISABLE_GLOBAL_PRETTIER_CONFIG")
 
-                                local hasTailwindPrettierPlugin = vim.fs.find('node_modules/prettier-plugin-tailwindcss',
-                                        {
-                                                upward = true,
-                                                path = ctx.dirname,
-                                                type = 'directory'
-                                        })[1]
+				if localPrettierConfig then
+					vim.list_extend(args, { "--config", localPrettierConfig })
+				elseif globalPrettierConfig and not disableGlobalPrettierConfig then
+					vim.list_extend(args, { "--config", globalPrettierConfig })
+				end
 
-                                if hasTailwindPrettierPlugin then
-                                        vim.list_extend(args, { '--plugin', 'prettier-plugin-tailwindcss' })
-                                end
+				return args
+			end
+		end,
+	},
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "VeryLazy",
+		config = function()
+			local signature = require("lsp_signature")
+			signature.setup({
+				doc_lines = 0,
+				hint_enable = false,
+				handler_opts = {
+					border = "none",
+				},
+			})
+		end,
+	},
+	{
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			"leoluz/nvim-dap-go",
+			"rcarriga/nvim-dap-ui",
+			"nvim-neotest/nvim-nio",
+		},
+		config = function()
+			-- TODO: configure the delve adapter without using dap-go
+			require("dap-go").setup()
 
-                                return args
-                        end
-                end,
-        },
-        {
-                "ray-x/lsp_signature.nvim",
-                event = "VeryLazy",
-                config = function()
-                        local signature = require("lsp_signature")
-                        signature.setup({
-                                doc_lines = 0,
-                                hint_enable = false,
-                                handler_opts = {
-                                        border = "none",
-                                },
-                        })
-                end,
-        },
-        {
-                "mfussenegger/nvim-dap",
-                dependencies = {
-                        "leoluz/nvim-dap-go",
-                        "rcarriga/nvim-dap-ui",
-                        "nvim-neotest/nvim-nio",
-                },
-                config = function()
-                        -- TODO: configure the delve adapter without using dap-go
-                        require("dap-go").setup()
+			local dap, dapui = require("dap"), require("dapui")
 
-                        local dap, dapui = require("dap"), require("dapui")
+			dap.adapters.cppdbg = {
+				id = "cppdbg",
+				type = "executable",
+				command = "/home/leonardocee/.cpptools-linux-x64/extension/debugAdapters/bin/OpenDebugAD7",
+			}
+			dap.configurations.cpp = {
+				{
+					name = "Launch file",
+					type = "cppdbg",
+					request = "launch",
+					program = function()
+						return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/", "file")
+					end,
+					cwd = "${workspaceFolder}",
+					stopAtEntry = true,
+				},
+			}
+			dap.configurations.c = dap.configurations.cpp
 
-                        dap.adapters.cppdbg = {
-                                id = 'cppdbg',
-                                type = 'executable',
-                                command =
-                                '/home/leonardocee/.cpptools-linux-x64/extension/debugAdapters/bin/OpenDebugAD7',
-                        }
-                        dap.configurations.cpp = {
-                                {
-                                        name = "Launch file",
-                                        type = "cppdbg",
-                                        request = "launch",
-                                        program = function()
-                                                return vim.fn.input('Executable: ', vim.fn.getcwd() .. '/', 'file')
-                                        end,
-                                        cwd = '${workspaceFolder}',
-                                        stopAtEntry = true,
-                                }
-                        }
-                        dap.configurations.c = dap.configurations.cpp
+			dapui.setup()
 
-                        dapui.setup()
-
-                        dap.listeners.before.attach.dapui_config = function()
-                                dapui.open()
-                        end
-                        dap.listeners.before.launch.dapui_config = function()
-                                dapui.open()
-                        end
-                        dap.listeners.before.event_terminated.dapui_config = function()
-                                dapui.close()
-                        end
-                        dap.listeners.before.event_exited.dapui_config = function()
-                                dapui.close()
-                        end
-                        dap.listeners.after.disconnect.dapui_config = function()
-                                dapui.close()
-                        end
-                end,
-        },
-        {
-                "airblade/vim-gitgutter",
-                config = function()
-                end
-        },
-        {
-                "nvim-telescope/telescope.nvim",
-                dependencies = { "nvim-lua/plenary.nvim" },
-                config = function()
-                        require("telescope").setup({
-                                defaults = {
-                                        layout_strategy = "vertical",
-                                        layout_config = {
-                                                height = vim.o.lines,
-                                                width = vim.o.columns,
-                                                prompt_position = "bottom",
-                                                preview_height = 0.5,
-                                        },
-                                        file_ignore_patterns = {
-                                                "node_modules", "build", "dist", "yarn.lock", "package-lock.json",
-                                                "lazy-lock.json", "Cargo.lock", "target", "third_party", ".git",
-                                        },
-                                },
-                                pickers = {
-                                        find_files = {
-                                                hidden = true
-                                        }
-                                }
-                        })
-                end,
-        },
-        {
-                'bettervim/yugen.nvim',
-                config = function()
-                end,
-        }
+			dap.listeners.before.attach.dapui_config = function()
+				dapui.open()
+			end
+			dap.listeners.before.launch.dapui_config = function()
+				dapui.open()
+			end
+			dap.listeners.before.event_terminated.dapui_config = function()
+				dapui.close()
+			end
+			dap.listeners.before.event_exited.dapui_config = function()
+				dapui.close()
+			end
+			dap.listeners.after.disconnect.dapui_config = function()
+				dapui.close()
+			end
+		end,
+	},
+	{
+		"airblade/vim-gitgutter",
+		config = function() end,
+	},
+	{
+		"nvim-telescope/telescope.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			require("telescope").setup({
+				defaults = {
+					layout_strategy = "vertical",
+					layout_config = {
+						height = vim.o.lines,
+						width = vim.o.columns,
+						prompt_position = "bottom",
+						preview_height = 0.5,
+					},
+					file_ignore_patterns = {
+						"node_modules",
+						"build",
+						"dist",
+						"yarn.lock",
+						"package-lock.json",
+						"lazy-lock.json",
+						"Cargo.lock",
+						"target",
+						"third_party",
+						".git",
+					},
+				},
+				pickers = {
+					find_files = {
+						hidden = true,
+					},
+				},
+			})
+		end,
+	},
+	{
+		"bettervim/yugen.nvim",
+		config = function() end,
+	},
 })
 
--- color.lua
+-- colorscheme
 vim.opt.termguicolors = true
-vim.cmd.colorscheme('yugen')
+vim.cmd.colorscheme("yugen")
