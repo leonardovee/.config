@@ -18,7 +18,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
 		local buffer = args.buf
 
-		-- TODO: this is slow
 		if client.server_capabilities.completionProvider then
 			local triggers = client.server_capabilities.completionProvider.triggerCharacters or {}
 			for i = string.byte("a"), string.byte("z") do
@@ -214,9 +213,6 @@ lazy.setup({
 		"mfussenegger/nvim-dap",
 		event = "VeryLazy",
 		config = function()
-			-- TODO: configure the delve adapter without using dap-go
-			--require("dap-go").setup()
-
 			local dap = require("dap")
 			local dap_view = require("dap-view")
 
@@ -224,6 +220,15 @@ lazy.setup({
 				id = "cppdbg",
 				type = "executable",
 				command = "/home/leonardocee/.cpptools-linux-x64/extension/debugAdapters/bin/OpenDebugAD7",
+			}
+			dap.adapters.delve = {
+				id = "delve",
+				type = "server",
+				port = "${port}",
+				executable = {
+					command = "dlv",
+					args = { "dap", "-l", "127.0.0.1:${port}" },
+				},
 			}
 
 			dap.configurations.cpp = {
@@ -238,7 +243,35 @@ lazy.setup({
 					stopAtEntry = true,
 				},
 			}
-			dap.configurations.c = dap.configurations.cpp
+			dap.configurations.c = {
+				{
+					name = "Launch file",
+					type = "cppdbg",
+					request = "launch",
+					program = function()
+						return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/", "file")
+					end,
+					cwd = "${workspaceFolder}",
+					stopAtEntry = true,
+				},
+			}
+			dap.configurations.go = {
+				{
+					name = "Launch file",
+					type = "delve",
+					request = "launch",
+					program = function()
+						return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/", "file")
+					end,
+				},
+				{
+					name = "Launch test",
+					type = "delve",
+					request = "launch",
+					mode = "test",
+					program = "./${relativeFileDirname}",
+				},
+			}
 
 			dap.listeners.before.attach.dap_view_config = function()
 				dap_view.open()
@@ -246,6 +279,7 @@ lazy.setup({
 			dap.listeners.before.launch.dap_view_config = function()
 				dap_view.open()
 			end
+
 			dap.listeners.before.event_terminated.dap_view_config = function()
 				vim.cmd("DapViewClose!")
 			end
