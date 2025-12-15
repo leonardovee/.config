@@ -1,59 +1,81 @@
--- set
+-- opt
 vim.opt.guicursor = ""
 vim.opt.nu = true
---vim.opt.tabstop = 4
---vim.opt.softtabstop = 4
---vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.hlsearch = false
 vim.opt.incsearch = true
---vim.opt.so = 999
 vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.completeopt = { "menuone", "noselect", "noinsert" }
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
 vim.opt.clipboard = "unnamedplus"
---vim.opt.relativenumber = true
 vim.opt.laststatus = 2
 
+-- api
 vim.api.nvim_set_option("updatetime", 500)
+vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+        callback = function(ev)
+                vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
+                local opts = { buffer = ev.buf }
+                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+                vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+                vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+                vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
+                vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
+                vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+                vim.keymap.set("n", "<space>f", function()
+                        vim.lsp.buf.format({ async = true })
+                end, opts)
+        end,
+})
+
+-- g
 vim.g.mapleader = " "
--- vim.g.loaded_netrw = 1
--- vim.g.loaded_netrwPlugin = 1
 
--- remaps
-local M = {}
-local function bind(op, outer_opts)
-        outer_opts = outer_opts or { noremap = true }
-        return function(lhs, rhs, opts)
-                opts = vim.tbl_extend("force", outer_opts, opts or {})
-                vim.keymap.set(op, lhs, rhs, opts)
-        end
-end
+-- keymap
+vim.keymap.set("n", "<leader>te", "<cmd>Telescope<CR>")
+vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>")
+vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<CR>")
+vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<CR>")
+vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<CR>")
+vim.keymap.set("n", "<leader>fe", "<cmd>Explore<CR>")
+vim.keymap.set("n", "<leader>db", "<cmd>DapContinue<CR>")
+vim.keymap.set("n", "<leader>dq", "<cmd>DapTerminate<CR>")
+vim.keymap.set("n", "<leader>do", "<cmd>DapStepOut<CR>")
+vim.keymap.set("n", "<leader>di", "<cmd>DapStepInto<CR>")
+vim.keymap.set("n", "<leader>dr", "<cmd>DapToggleRepl<CR>")
+vim.keymap.set("n", "<leader>dp", "<cmd>DapToggleBreakpoint<CR>")
+vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
+vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
 
-M.nmap = bind("n", { noremap = false })
-M.nnoremap = bind("n")
-M.vnoremap = bind("v")
-M.xnoremap = bind("x")
-M.inoremap = bind("i")
-
-local nnoremap = M.nnoremap
-
-nnoremap("<leader>te", "<cmd>:Telescope<CR>")
-nnoremap("<leader>ff", "<cmd>:Telescope find_files<CR>")
-nnoremap("<leader>fg", "<cmd>:Telescope live_grep<CR>")
-nnoremap("<leader>fb", "<cmd>:Telescope buffers<CR>")
-nnoremap("<leader>fh", "<cmd>:Telescope help_tags<CR>")
-
-nnoremap("<leader>fe", "<cmd>:Explore<CR>")
-
-nnoremap("<leader>db", "<cmd>:DapContinue<CR>")
-nnoremap("<leader>dq", "<cmd>:DapTerminate<CR>")
-nnoremap("<leader>do", "<cmd>:DapStepOut<CR>")
-nnoremap("<leader>di", "<cmd>:DapStepInto<CR>")
-nnoremap("<leader>dr", "<cmd>:DapToggleRepl<CR>")
-nnoremap("<leader>dp", "<cmd>:DapToggleBreakpoint<CR>")
+-- lsp
+vim.lsp.config("lua_ls", {})
+vim.lsp.config("ts_ls", { root_markers = { "package.json" } })
+vim.lsp.config("rust_analyzer", { root_markers = { "Cargo.toml" } })
+vim.lsp.config("clangd", {
+        cmd = { "clangd", "--compile-commands-dir=build" },
+        root_markers = { "compile_commands.json" }
+})
+vim.lsp.config("gopls", {
+        cmd = { "gopls", "serve" },
+        filetypes = { "go", "gomod" },
+        root_markers = { "go.work", "go.mod" },
+        settings = {
+                gopls = {
+                        analyses = {
+                                unusedparams = true,
+                        },
+                        staticcheck = true,
+                },
+        },
+        single_file_support = true,
+})
+vim.lsp.enable({ "ts_ls", "lua_ls", "rust_analyzer", "clangd", "gopls" })
 
 -- plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -70,61 +92,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-        -- lsp and stuff
-        {
-                "neovim/nvim-lspconfig",
-                config = function()
-                        local lspconfig = require("lspconfig")
-                        local util = require("lspconfig.util")
-
-                        lspconfig.ts_ls.setup({})
-                        lspconfig.lua_ls.setup({})
-                        lspconfig.rust_analyzer.setup({})
-
-                        lspconfig.clangd.setup {
-                                cmd = { "clangd", "--compile-commands-dir=build" },
-                                root_dir = util.root_pattern("compile_commands.json", ".git"),
-                        }
-
-                        lspconfig.gopls.setup({
-                                cmd = { "gopls", "serve" },
-                                filetypes = { "go", "gomod" },
-                                root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-                                settings = {
-                                        gopls = {
-                                                analyses = {
-                                                        unusedparams = true,
-                                                },
-                                                staticcheck = true,
-                                        },
-                                },
-                                single_file_support = true,
-                        })
-
-                        vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
-                        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-                        vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
-                        vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist)
-                        vim.api.nvim_create_autocmd("LspAttach", {
-                                group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-                                callback = function(ev)
-                                        vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
-
-                                        local opts = { buffer = ev.buf }
-                                        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-                                        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-                                        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-                                        vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-                                        vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-                                        vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, opts)
-                                        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-                                        vim.keymap.set("n", "<space>f", function()
-                                                vim.lsp.buf.format({ async = true })
-                                        end, opts)
-                                end,
-                        })
-                end,
-        },
+        -- lsp
         {
                 "hrsh7th/nvim-cmp",
                 dependencies = {
@@ -338,7 +306,7 @@ require("lazy").setup({
                                         },
                                         file_ignore_patterns = {
                                                 "node_modules", "build", "dist", "yarn.lock", "package-lock.json",
-                                                "lazy-lock.json", "Cargo.lock", "target", "third_party"
+                                                "lazy-lock.json", "Cargo.lock", "target", "third_party", ".git",
                                         },
                                 },
                                 pickers = {
