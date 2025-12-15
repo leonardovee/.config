@@ -55,13 +55,15 @@ vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>")
 vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<CR>")
 vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<CR>")
 vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<CR>")
+
 vim.keymap.set("n", "<leader>fe", "<cmd>Explore<CR>")
+
 vim.keymap.set("n", "<leader>db", "<cmd>DapContinue<CR>")
 vim.keymap.set("n", "<leader>dq", "<cmd>DapTerminate<CR>")
 vim.keymap.set("n", "<leader>do", "<cmd>DapStepOut<CR>")
 vim.keymap.set("n", "<leader>di", "<cmd>DapStepInto<CR>")
-vim.keymap.set("n", "<leader>dr", "<cmd>DapToggleRepl<CR>")
 vim.keymap.set("n", "<leader>dp", "<cmd>DapToggleBreakpoint<CR>")
+
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
@@ -110,20 +112,23 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
-	{
-		"williamboman/mason.nvim",
-		opts = {},
-		config = function()
-			local mason = require("mason")
-			mason.setup({})
-		end,
-	},
+local lazy = require("lazy")
+lazy.setup({
 	{
 		"nvim-treesitter/nvim-treesitter",
 		config = function()
 			local treesitter = require("nvim-treesitter.configs")
+
 			treesitter.setup({ auto_install = true })
+		end,
+	},
+	{
+		"williamboman/mason.nvim",
+		event = "VeryLazy",
+		config = function()
+			local mason = require("mason")
+
+			mason.setup({})
 		end,
 	},
 	{
@@ -131,6 +136,8 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = function()
 			local conform = require("conform")
+			local prettier = require("conform.formatters.prettier")
+
 			conform.setup({
 				formatters_by_ft = {
 					lua = { "stylua" },
@@ -146,7 +153,8 @@ require("lazy").setup({
 					lsp_fallback = true,
 				},
 			})
-			require("conform.formatters.prettier").args = function(_, ctx)
+
+			prettier.args = function(_, ctx)
 				local prettier_roots = { ".prettierrc", ".prettierrc.json", "prettier.config.js" }
 				local args = { "--stdin-filepath", "$FILENAME" }
 				local config_path = vim.fn.stdpath("config")
@@ -179,6 +187,7 @@ require("lazy").setup({
 		event = "VeryLazy",
 		config = function()
 			local signature = require("lsp_signature")
+
 			signature.setup({
 				doc_lines = 0,
 				hint_enable = false,
@@ -189,23 +198,34 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"igorlfs/nvim-dap-view",
+		event = "VeryLazy",
+		config = function()
+			local dap_view = require("dap-view")
+
+			dap_view.setup({
+				winbar = {
+					default_section = "scopes",
+				},
+			})
+		end,
+	},
+	{
 		"mfussenegger/nvim-dap",
-		dependencies = {
-			"leoluz/nvim-dap-go",
-			"rcarriga/nvim-dap-ui",
-			"nvim-neotest/nvim-nio",
-		},
+		event = "VeryLazy",
 		config = function()
 			-- TODO: configure the delve adapter without using dap-go
-			require("dap-go").setup()
+			--require("dap-go").setup()
 
-			local dap, dapui = require("dap"), require("dapui")
+			local dap = require("dap")
+			local dap_view = require("dap-view")
 
 			dap.adapters.cppdbg = {
 				id = "cppdbg",
 				type = "executable",
 				command = "/home/leonardocee/.cpptools-linux-x64/extension/debugAdapters/bin/OpenDebugAD7",
 			}
+
 			dap.configurations.cpp = {
 				{
 					name = "Launch file",
@@ -220,34 +240,31 @@ require("lazy").setup({
 			}
 			dap.configurations.c = dap.configurations.cpp
 
-			dapui.setup()
-
-			dap.listeners.before.attach.dapui_config = function()
-				dapui.open()
+			dap.listeners.before.attach.dap_view_config = function()
+				dap_view.open()
 			end
-			dap.listeners.before.launch.dapui_config = function()
-				dapui.open()
+			dap.listeners.before.launch.dap_view_config = function()
+				dap_view.open()
 			end
-			dap.listeners.before.event_terminated.dapui_config = function()
-				dapui.close()
+			dap.listeners.before.event_terminated.dap_view_config = function()
+				vim.cmd("DapViewClose!")
 			end
-			dap.listeners.before.event_exited.dapui_config = function()
-				dapui.close()
+			dap.listeners.before.event_exited.dap_view_config = function()
+				vim.cmd("DapViewClose!")
 			end
-			dap.listeners.after.disconnect.dapui_config = function()
-				dapui.close()
+			dap.listeners.after.disconnect.dap_view_config = function()
+				vim.cmd("DapViewClose!")
 			end
 		end,
 	},
 	{
-		"airblade/vim-gitgutter",
-		config = function() end,
-	},
-	{
 		"nvim-telescope/telescope.nvim",
+		event = "VeryLazy",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
-			require("telescope").setup({
+			local telescope = require("telescope")
+
+			telescope.setup({
 				defaults = {
 					layout_strategy = "vertical",
 					layout_config = {
@@ -276,6 +293,11 @@ require("lazy").setup({
 				},
 			})
 		end,
+	},
+	{
+		"airblade/vim-gitgutter",
+		event = "VeryLazy",
+		config = function() end,
 	},
 	{
 		"bettervim/yugen.nvim",
